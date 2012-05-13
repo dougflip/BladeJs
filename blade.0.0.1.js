@@ -125,14 +125,12 @@
         * In practice, HTML elements will contain references via a data attribute that will be resolved by this function.
         * For example, a select list may indicate on change it needs to serialize all inputs within its own containing DIV tag:
         *       <select data-serialize="traverse: closest('div').find(':input')">
-        * This function would receive the select as $context and the data attribute string as query and perform the search.
-        * @$context: a jQuery object which designates a starting context.
-        *               This can be used to perform relative selections in combination with 'traverse' option
+        * This function would receive the data attribute string as query and perform the search relative to the select element (which will be scoped as keyword this).
         * @query: defines the strategy to be used when locating items. The following example formats are supported:
         *           "#someId, .someClass, someTagName" - any valid jQuery selector. Simply gets wrapped in the $ sign.
         *           "select: #someId, .someClass, someTagName" - same as above just explicitly stated as selector
-        *           "traverse: closest('.container').find(':input')" - navigates from/relative to the given $context argument. Any chained jQuery functions are accepted
-        *           "func: someFunction" - a function to be called which is passed the $context argument and returns a jQuery object
+        *           "traverse: closest('.container').find(':input')" - navigates from/relative to the current context (this). Any chained jQuery functions are accepted
+        *           "func: someFunction" - a function to be called which is passed this and returns a jQuery object
         */
         jQueryEval: function(query){
             var match = /^(select|traverse|func):\s*(.*)$/.exec(query);
@@ -159,10 +157,10 @@
 
         /**
         * Adds the given content to the DOM via the specified updateMode.
-        * All updates are executed relative to the given $context jQuery object.
+        * All updates are executed relative to the current context jQuery object.
         * @content: the content to be inserted into the DOM
         * @updateMode: the method which will be used to update the DOM with the new content.
-        *   The default is 'html' which uses jQuery's html() function to set the inner html of the $context element.
+        *   The default is 'html' which uses jQuery's html() function to set the inner html of the current element.
         */
         update: function(content, updateMode){
             updateMode = updateMode || 'html';
@@ -230,8 +228,7 @@
         * @data-update-mode: determines how the resulting data will be inserted into the DOM.
         */
         ajaxSuccess: function(response){
-            //this.bladeUpdate(response.Html, 'update', 'updateMode');
-            alert('Success!\n'+response);
+            this.blade('updateWith', response.Html, this.data('update'), this.data('updateMode'))
         },
 
         /**
