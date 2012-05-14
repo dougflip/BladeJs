@@ -15,7 +15,7 @@
     var methods = {
         /**
         * Accepts an object map of values used to extend $.fn.blade.defaults.
-        * @options: object map of values used to extend $.fn.blade.defaults
+        * @param {Object} options object map of values used to extend $.fn.blade.defaults
         */
         init: function(options){
             $.extend($.fn.blade.defaults, options);
@@ -24,14 +24,14 @@
         /**
         * Main method of the BladeJs plugin 
         * Maps provided HTML5 data attributes to a jQuery ajax request object and attempts to send to the server
-        * @data-url: specifies the URL of the ajax request. FORM tags may use the ACTION attribute instead.
-        * @data-on (optional): specifies the event on which this is handled, forms defaulted to 'submit' all other elements to 'click'
-        * @data-data-type (optional): specify the dataType property passed to the ajax request.
-        * @data-type (optional): specify the type property passed to the ajax request. Default to GET
-        * @data-error-before-send (optional): set to the beforeSend callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxBeforeSend
-        * @data-success-callback (optional): set to the success callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxSuccess
-        * @data-error-callback (optional): set to the error callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxError
-        * @data-serialize (optional): If provided, the value will be forwarded to jQueryEval.
+        * @data {String} url specifies the URL of the ajax request. FORM tags may use the ACTION attribute instead.
+        * @data {String} [on] specifies the event on which this is handled, forms defaulted to 'submit' all other elements to 'click'
+        * @data {String} [dataType]: specify the dataType property passed to the ajax request.
+        * @data {String} [type] specify the type property passed to the ajax request. Default to GET
+        * @data {String} [beforeSend] set to the beforeSend callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxBeforeSend
+        * @data {String} [success] set to the success callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxSuccess
+        * @data {String} [error] set to the error callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxError
+        * @data {String} [serialize] If provided, the value will be forwarded to jQueryEval.
         *                               If nothing is provided GET requests will serialize themselves while POST requests serialize the parent FORM tag
         */
         ajaxOn: function(){
@@ -48,8 +48,8 @@
                             ? $this.blade('jQueryEval',$this.data('serialize')).serialize()
                             : $this.data('type') == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
                         beforeSend: $this.blade('resolveObj',$this.data('beforeSend')),
-                        success: $this.blade('resolveObj',$this.data('successCallback')),
-                        error: $this.blade('resolveObj',$this.data('errorCallback'))
+                        success: $this.blade('resolveObj',$this.data('success')),
+                        error: $this.blade('resolveObj',$this.data('error'))
                     };
                     $this.blade('executeAjax',request);
                     return false;
@@ -58,14 +58,14 @@
         },
 
         /**
-        * NOTE: Still evaluating if this is needed.
         * BladeJs relies heavily on HTML5 data attributes.
         * Because of this it was determined to be important to "namespace" our data attributes
         * The default namespace is "blade" but this can be changed via $.fn.blade.dataNamespace.
         * Due to this customization we access all BladeJs data properties through this custom wrapper.
         * It handles appending the dataNamespace to the requested data attribute.
-        * @key - the data key, free from any namespace, whose value is requested
-        *   for example, the markup uses data-blade-serialize you will pass this function "serialize" with $.fn.blade.dataNamespace set to "blade"
+        * @param {String} key - the data key, free from any namespace, whose value is requested
+        * @example the markup uses data-blade-serialize you will pass this function "serialize" with $.fn.blade.dataNamespace set to "blade"
+        * @note Still evaluating if this is needed.
         */
         dataFor: function(key){
             if(!key){
@@ -80,7 +80,7 @@
         /**
         * Defaults a success and error handler if they are not provided.
         * Then passes the provided request parameter to jQuery for execution.
-        * @request: object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
+        * @param {Object} request object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
         */
         executeAjax: function(request){
             if(!request.beforeSend){
@@ -102,7 +102,7 @@
         *   FORM-"submit", SELECT-"change", INPUT:TEXT-"blur"
         * Finally, this will fall back to the provided @defaultEvent 
         *   and if this is not provided then "click" will be returned
-        * @defaultEvent: if no matching event is found then this event will be returned.
+        * @param {String} defaultEvent if no matching event is found then this event will be returned.
         */
         getRegisteredEvent: function(defaultEvent){
             if(this.data('on')){
@@ -126,7 +126,7 @@
         * For example, a select list may indicate on change it needs to serialize all inputs within its own containing DIV tag:
         *       <select data-serialize="traverse: closest('div').find(':input')">
         * This function would receive the data attribute string as query and perform the search relative to the select element (which will be scoped as keyword this).
-        * @query: defines the strategy to be used when locating items. The following example formats are supported:
+        * @param {String} query defines the strategy to be used when locating items. The following example formats are supported:
         *           "#someId, .someClass, someTagName" - any valid jQuery selector. Simply gets wrapped in the $ sign.
         *           "select: #someId, .someClass, someTagName" - same as above just explicitly stated as selector
         *           "traverse: closest('.container').find(':input')" - navigates from/relative to the current context (this). Any chained jQuery functions are accepted
@@ -149,16 +149,16 @@
 
         /**
         * Attempts to resolve an object reference from the provided string.
-        * @stringName string name of an object to be resolved
+        * @param {String} stringName string name of an object to be resolved
         * @return object reference, null, or undefined.
         */
-        resolveObj: function(stringName){
-            if(!stringName){
+        resolveObj: function(objName){
+            if(!objName){
                 return null;
             }
-            var result = window[stringName];
+            var result = window[objName];
             if(!result){
-                $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ stringName);
+                $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ objName);
             }
             return result;
         },
@@ -166,8 +166,8 @@
         /**
         * Adds the given content to the DOM via the specified updateMode.
         * All updates are executed relative to the current context jQuery object.
-        * @content: the content to be inserted into the DOM
-        * @updateMode: the method which will be used to update the DOM with the new content.
+        * @param {String} content the content to be inserted into the DOM
+        * @param {String} updateMode the method which will be used to update the DOM with the new content.
         *   The default is 'html' which uses jQuery's html() function to set the inner html of the current element.
         */
         update: function(content, updateMode){
@@ -190,9 +190,9 @@
 
         /**
         * Wrapper over @update as a convienence method for making DOM updates.
-        * @content: the content to be inserted into the DOM
-        * @query: uses @jQueryEval to determine which element will be updated
-        * @updateMode: the method which will be used to update the DOM with the new content.
+        * @param {String} content the content to be inserted into the DOM
+        * @param {String} query uses @jQueryEval to determine which element will be updated
+        * @param {String} mode the method which will be used to update the DOM with the new content.
         */
         updateWith: function(content, query, mode){
             return this.blade('jQueryEval', query).blade('update', content, mode);
@@ -204,6 +204,9 @@
     *   Creates the single plugin namespace within the jQuery object
     *   Forwards string method names to the appropriate internal method - defaulted to init.
     *********************************************************/
+    /**
+    * @param {String} method the name of the method to be accessed within the blade namespace
+    */
     $.fn.blade = function(method){
         if ( methods[method] ) {
             return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
