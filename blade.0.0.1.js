@@ -143,6 +143,7 @@
             if (match[1] == 'func'){
                 return this.blade('resolveObj',match[2])(this);
             }
+            $.fn.blade.defaults.log('BladeJs.jQueryEval: Unable to parse the provided query: '+ query + '. No elements were selected');
             return $();
         },
 
@@ -152,7 +153,14 @@
         * @return object reference, null, or undefined.
         */
         resolveObj: function(stringName){
-            return window[stringName];
+            if(!stringName){
+                return null;
+            }
+            var result = window[stringName];
+            if(!result){
+                $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ stringName);
+            }
+            return result;
         },
 
         /**
@@ -202,7 +210,7 @@
         } else if ( typeof method === 'object' || ! method ) {
             return methods.init.apply( this, arguments );
         } else {
-            $.error( 'Method ' +  method + ' does not exist on jQuery.blade' );
+            $.fn.blade.defaults.log('Method ' +  method + ' does not exist on jQuery.blade' );
         }
     };
 
@@ -217,7 +225,7 @@
         *  a more specific handler is not specified.
         */
         ajaxError: function(jqxhr, status, error){
-            alert('An error was returned by the server and handled by the default BladeJs handler.\nTo specify a new global handler, provide a new callback via blade.defaults.ajaxError_Default.\nThe server responded with:\n'+jqxhr.responseText);
+            $.fn.blade.defaults.log('BladeJs.defaults.ajaxError: Request failed with error: '+ error + ' and status: ' + status);
         },
 
         /**
@@ -228,7 +236,7 @@
         * @data-update-mode: determines how the resulting data will be inserted into the DOM.
         */
         ajaxSuccess: function(response){
-            this.blade('updateWith', response.Html, this.data('update'), this.data('updateMode'))
+            $.fn.blade.defaults.log('BladeJs.defaults.ajaxSuccess: Request succeeded with response: '+ response);
         },
 
         /**
@@ -240,7 +248,17 @@
         * Default data prefix.
         * for example, setting this to 'bl' will 
         */
-        dataNamespace: 'blade'
+        dataNamespace: 'blade',
+
+        /**
+        * Default log function.
+        * Replacing this function will allow consumers to handle log statements.
+        */
+        log: function(msg){
+            if(window.console && console.log){
+                console.log(msg);
+            }
+        }
     };
 
  })(jQuery);
