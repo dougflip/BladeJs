@@ -224,38 +224,40 @@
     *********************************************************/
     $.fn.blade.defaults = {
         /**
-        * Default global error handler which will be attached to ajax requests
-        *  a more specific handler is not specified.
+        * Default ajax error handler - called if no other method is specified
+        * This should be replaced by specifying a new method via $.fn.blade({ajaxError:function(){}});
+        * This implementation simply logs the server response.
         */
         ajaxError: function(jqxhr, status, error){
             $.fn.blade.defaults.log('BladeJs.defaults.ajaxError: Request failed with error: '+ error + ' and status: ' + status);
         },
 
         /**
-        * Default ajax success response - called if no other method is specified
-        *   Replaces the html of data-update element with the returned HTML.
-        * This works well for simple ajax form posts or simple ajax GET updates of small portions of the page.
-        * @data-update: jQuery selector of the element to replace with server HTML.
-        * @data-update-mode: determines how the resulting data will be inserted into the DOM.
+        * Default ajax success handler - called if no other method is specified
+        * This should be replaced by specifying a new method via $.fn.blade({ajaxSuccess:function(){}});
+        * This implementation simply logs the server response.
         */
         ajaxSuccess: function(response){
             $.fn.blade.defaults.log('BladeJs.defaults.ajaxSuccess: Request succeeded with response: '+ response);
         },
 
         /**
-        * Placeholder for a default before send callback
+        * Default ajax before send handler
+        * There is no default implementation provided for this method.
         */
         ajaxBeforeSend: null,
 
         /**
-        * Default data prefix.
-        * for example, setting this to 'bl' will 
+        * The namespace to be expected on all blade related data attributes.
+        * The default setting is "blade".
+        * @note this feature is not yet implemented as it is stil being evaluated.
         */
         dataNamespace: 'blade',
 
         /**
-        * Default log function.
-        * Replacing this function will allow consumers to handle log statements.
+        * Default log method used by blade to record errors and other interesting events.
+        * This should be replaced by specifying a new method via $.fn.blade({log:function(){}});
+        * This implementation simply attempts to log information to the browser console log.
         */
         log: function(msg){
             if(window.console && console.log){
