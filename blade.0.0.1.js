@@ -27,7 +27,7 @@
         * @data {String} url specifies the URL of the ajax request. FORM tags may use the ACTION attribute instead.
         * @data {String} [on] specifies the event on which this is handled, forms defaulted to 'submit' all other elements to 'click'
         * @data {String} [dataType]: specify the dataType property passed to the ajax request.
-        * @data {String} [type] specify the type property passed to the ajax request. Default to GET
+        * @data {String} [type] specify the type property passed to the ajax request.
         * @data {String} [beforeSend] set to the beforeSend callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxBeforeSend
         * @data {String} [success] set to the success callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxSuccess
         * @data {String} [error] set to the error callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxError
@@ -42,7 +42,7 @@
                     var request = {
                         url: $this.is('form') ? $this.attr('action') : $this.data('url'),
                         datatype: $this.data('dataType'),
-                        type: $this.data('type') || 'GET',
+                        type: $this.data('type'),
                         context: $this,
                         data: $this.data('serialize')
                             ? $this.blade('jQueryEval',$this.data('serialize')).serialize()
