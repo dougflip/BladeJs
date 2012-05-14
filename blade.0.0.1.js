@@ -83,7 +83,7 @@
         * @request: object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
         */
         executeAjax: function(request){
-            if(!request.beforeSend && $.fn.blade.defaults.ajaxBeforeSend){
+            if(!request.beforeSend){
                 request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend
             }
             if(!request.success){
