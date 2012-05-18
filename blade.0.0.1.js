@@ -6,6 +6,39 @@
  * Project repository: https://github.com/dougflip/bladejs
  */
  ;(function($){
+    
+    /*********************************************************
+    *   BLADE PRIVATE CLASSES:
+    *   Internal constructor functions for BladeJs
+    *********************************************************/
+    /**
+    * Wraps the provided data object so that lookups can be performed
+    *   via the get method which automatically prepend the provided prefix.
+    */
+    dataHash = function(data, prefix){
+        var d = data;
+        var prefix = prefix;
+
+        this.get = function(key){
+            if(!key){
+                return null;
+            }
+            if(!prefix){
+                return d[key];
+            }
+            return d[prefix + key.charAt(0).toUpperCase() + key.slice(1)];
+        }
+    }
+
+    dataTransform = function(data,prefix){
+        var result = {};
+        var rgx = new RegExp('^'+prefix+'([A-Z])');
+        for(var p in data){
+            result[p.replace(rgx,'$1')] = data[p];
+        }
+        return result;
+    }
+
     /*********************************************************
     *   BLADE METHODS:
     *   Map of publicly available functions
@@ -39,42 +72,23 @@
                 var $el = $(el);
                 $el.on($el.blade('getRegisteredEvent'), function(){
                     $this = $(this);
+                    var d = new dataHash($this.data(), $.fn.blade.defaults.dataNamespace);
                     var request = {
-                        url: $this.is('form') ? $this.attr('action') : $this.data('url'),
-                        datatype: $this.data('dataType'),
-                        type: $this.data('type'),
+                        url: $this.is('form') ? $this.attr('action') : d.get('url'),
+                        datatype: d.get('dataType'),
+                        type: d.get('type'),
                         context: $this,
-                        data: $this.data('serialize')
-                            ? $this.blade('jQueryEval',$this.data('serialize')).serialize()
-                            : $this.data('type') == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
-                        beforeSend: $this.blade('resolveObj',$this.data('beforeSend')),
-                        success: $this.blade('resolveObj',$this.data('success')),
-                        error: $this.blade('resolveObj',$this.data('error'))
+                        data: d.get('serialize')
+                            ? $this.blade('jQueryEval',d.get('serialize')).serialize()
+                            : d.get('type') == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
+                        beforeSend: $this.blade('resolveObj',d.get('beforeSend')),
+                        success: $this.blade('resolveObj',d.get('success')),
+                        error: $this.blade('resolveObj',d.get('error'))
                     };
                     $this.blade('executeAjax',request);
                     return false;
                 });
             });
-        },
-
-        /**
-        * BladeJs relies heavily on HTML5 data attributes.
-        * Because of this it was determined to be important to "namespace" our data attributes
-        * The default namespace is "blade" but this can be changed via $.fn.blade.dataNamespace.
-        * Due to this customization we access all BladeJs data properties through this custom wrapper.
-        * It handles appending the dataNamespace to the requested data attribute.
-        * @param {String} key - the data key, free from any namespace, whose value is requested
-        * @example the markup uses data-blade-serialize you will pass this function "serialize" with $.fn.blade.dataNamespace set to "blade"
-        * @note Still evaluating if this is needed.
-        */
-        dataFor: function(key){
-            if(!key){
-                return null;
-            }
-            if(!$.fn.blade.defaults.dataNamespace){
-                return this.data(key);
-            }
-            return this.data($.fn.blade.defaults.dataNamespace + key.charAt(0).toUpperCase() + key.slice(1));
         },
 
         /**
