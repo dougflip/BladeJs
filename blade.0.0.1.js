@@ -30,15 +30,6 @@
         }
     }
 
-    dataTransform = function(data,prefix){
-        var result = {};
-        var rgx = new RegExp('^'+prefix+'([A-Z])');
-        for(var p in data){
-            result[p.replace(rgx,'$1')] = data[p];
-        }
-        return result;
-    }
-
     /*********************************************************
     *   BLADE METHODS:
     *   Map of publicly available functions
@@ -76,7 +67,7 @@
                     var request = {
                         url: $this.is('form') ? $this.attr('action') : d.get('url'),
                         datatype: d.get('dataType'),
-                        type: d.get('type'),
+                        type: d.get('type') || $this.attr('method'),
                         context: $this,
                         data: d.get('serialize')
                             ? $this.blade('jQueryEval',d.get('serialize')).serialize()
