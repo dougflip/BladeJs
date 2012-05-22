@@ -1,55 +1,30 @@
-BladeJs
-=======
+BladeJs jQuery Plugin
+=====================
 
-Overview
---------
+BladeJs is a small JavaScript library which maps HTML5 data attributes to jQuery AJAX requests. Built as a jQuery plugin the core functionality handles registering events, serializing data, invoking AJAX methods, and passing the response to a JavaScript function. Check out the examples page and [wiki](https://github.com/dougflip/BladeJs/wiki) for a full list of features.
 
-BladeJS is a small JavaScript library which attempts to make interactive AJAX communication via jQuery easier for developers. The main goal of the project is to reduce the amount of JavaScript code needed to write responsive applications. BladeJS provides a generalized approach which allows developers to provide arguments/data within HTML markup by way of HTML5 data attributes. This helps to limit the amount of common JavaScript code needed to make these communications possible.
+####The ajaxOn Method
+The ajaxOn method is the central piece of BladeJs. Here we use jQuery to select all elements on the page with an "ajax-on" CSS class and apply the plugin to them.
 
-Example
--------
-#### The long version
-This HTML snippet should help to illustrate BladeJS:
-
-<code>
-&lt;select class="ajax-on" data-on="change" data-url="/Address/UpdateByType" data-serialize=".address-type" data-success="ajaxSuccess_Default" &gt;...&lt;/select&gt;
-</code>
-
-There are a few items to note:
-- the CSS class of "ajax-on" is arbitrary and serves as a selector to apply the BladeJs ajaxOn plugin
-- data-on specifies the "change" event for this element
-- data-url provides the URL to the server side method to be invoked
-- data-serialize specifies what data should be serialized via jQuery and included in the request
-- data-success specifies a function which will handle the response of the ajax request
-
-#### The shorter version
-
-Although the above markup works fine, the same functionality can be achieved with less typing. By default in BladeJs select elements operate on the "change" event. This means we do not need to explicitly set this attribute and we can remove it entirely. Secondly, the success function can be registered with BladeJs on setup as the default success handler. This leaves us with just the URL and the data to serialize:
-
-<code>
-&lt;select class="ajax-on" data-url="/Address/UpdateByType" data-serialize=".address-type" &gt;...&lt;/select&gt;
-</code>
-
-####So what does this actually do?
-Good question! 
-First, we need to initialize the select element:
-
-<code>
+<pre>
 $(function(){
   $('.ajax-on').blade('ajaxOn')
 });
-</code>
+</pre>
 
-Now every time the element triggers a "change" event BladeJs will serialize all elements with the "address-type" class, send the values to "/Address/UpdateByType", and pass the response to the ajaxSuccess_Default function. And that is the core of BladeJs.
+####The Markup
+Now that we have BladeJs looking for ".ajax-on" elements, let's see how to construct some markup. Here's an example of a select list which needs to issue an ajax request when an "onchange" event is triggered. Notice how values are stored as HTML5 attributes and use a "blade" namespace by default.
 
-data-serialize
---------------
-The data-serialize attribute accepts a special syntax which makes serializing data for the server easy. Lets look at the three approaches that BladeJs provides:
-### select: 
-// TODO: add info
+<pre>
+&lt;select class="ajax-on" 
+          data-blade-on="change" 
+          data-blade-url="/Address/UpdateByType" 
+          data-blade-serialize=".address-type" 
+          data-blade-success="ajaxSuccess"&gt;
+</pre>
 
-### traverse: 
-// TODO: add info
+####The Result
+Now every time the select triggers a "change" event BladeJs will serialize all elements with the "address-type" CSS class, send the values to "/Address/UpdateByType", and pass the response to the ajaxSuccess function.
 
-### func: 
-// TODO: add info
+####What Else?
+BladeJs is built around defaults and ease of use. For example, in the above markup we can remove the <code>data-blade-on</code> attribute because select elements operate on the change method by default. There is also support for registering global handlers for success, error, and beforeSend callbacks. Check out the [wiki](https://github.com/dougflip/BladeJs/wiki) and examples pages for in depth info.
