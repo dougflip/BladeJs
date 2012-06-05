@@ -252,13 +252,6 @@
         },
 
         /**
-        * The namespace to be expected on all blade related data attributes.
-        * The default setting is "blade".
-        * @note this feature is not yet implemented as it is stil being evaluated.
-        */
-        dataNamespace: 'blade',
-
-        /**
         * Default log method used by blade to record errors and other interesting events.
         * This should be replaced by specifying a new method via $.fn.blade({log:function(){}});
         * This implementation simply attempts to log information to the browser console log.
