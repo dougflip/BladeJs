@@ -6,21 +6,6 @@
  * Project repository: https://github.com/dougflip/bladejs
  */
  ;(function($){
-    
-    dataHash = function(data, prefix){
-        var d = data;
-        var prefix = prefix;
-
-        this.get = function(key){
-            if(!key){
-                return null;
-            }
-            if(!prefix){
-                return d[key];
-            }
-            return d[prefix + key.charAt(0).toUpperCase() + key.slice(1)];
-        }
-    }
 
     /*********************************************************
     *   BLADE METHODS:
@@ -60,21 +45,21 @@
                 var $el = $(el);
                 $el.on($el.blade('getRegisteredEvent'), function(){
                     $this = $(this);
-                    var d = new dataHash($this.data(), $.fn.blade.defaults.dataNamespace);
+                    var d = $this.data()
                     var request = {
-                        url: $this.is('form') ? $this.attr('action') : d.get('url'),
-                        datatype: d.get('dataType'),
-                        type: d.get('type') || $this.attr('method'),
+                        url: $this.is('form') ? $this.attr('action') : d.bladeUrl,
+                        datatype: d.bladeDataType,
+                        type: d.bladeType || $this.attr('method'),
                         context: $this,
-                        data: d.get('serialize')
-                            ? $this.blade('jQueryEval',d.get('serialize')).serialize()
-                            : d.get('type') == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
-                        beforeSend: $this.blade('resolveObj',d.get('beforeSend')),
-                        success: $this.blade('resolveObj',d.get('success')),
-                        error: $this.blade('resolveObj',d.get('error')),
+                        data: d.bladeSerialize
+                            ? $this.blade('jQueryEval',d.bladeSerialize).serialize()
+                            : d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
+                        beforeSend: $this.blade('resolveObj',d.bladeBeforeSend),
+                        success: $this.blade('resolveObj',d.bladeSuccess),
+                        error: $this.blade('resolveObj',d.bladeError),
                     };
-                    if(d.get('confirm') !== undefined){
-                        request.confirm = $this.blade('resolveObj',d.get('confirm')) || $.fn.blade.defaults.confirmAction;
+                    if(d.bladeConfirm !== undefined){
+                        request.confirm = $this.blade('resolveObj',d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
                     }
                     $this.blade('executeAjax',request);
                     return false;
