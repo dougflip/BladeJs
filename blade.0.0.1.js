@@ -255,6 +255,11 @@
         */
         ajaxBeforeSend: null,
 
+        /**
+        * Default function to be executed when an action requires user confirmation.
+        * This default implementation simply shows a browser confirm window before sending the request to jQuery.
+        * @ param {object} request The request object, fully populated by Blade, which is to be passed to jQuery if the action is confirmed.
+        */
         confirmAction: function(request){
             if(confirm('Please confirm that you wish to proceed with this action.\nClick "OK" to continue; otherwise click "Cancel')){
                 $.ajax(request);
