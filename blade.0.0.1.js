@@ -7,14 +7,6 @@
  */
  ;(function($){
     
-    /*********************************************************
-    *   BLADE PRIVATE CLASSES:
-    *   Internal constructor functions for BladeJs
-    *********************************************************/
-    /**
-    * Wraps the provided data object so that lookups can be performed
-    *   via the get method which automatically prepend the provided prefix.
-    */
     dataHash = function(data, prefix){
         var d = data;
         var prefix = prefix;
@@ -49,14 +41,19 @@
         * Main method of the BladeJs plugin 
         * Maps provided HTML5 data attributes to a jQuery ajax request object and attempts to send to the server
         * @data {String} url specifies the URL of the ajax request. FORM tags may use the ACTION attribute instead.
-        * @data {String} [on] specifies the event on which this is handled, forms defaulted to 'submit' all other elements to 'click'
-        * @data {String} [dataType]: specify the dataType property passed to the ajax request.
-        * @data {String} [type] specify the type property passed to the ajax request.
-        * @data {String} [beforeSend] set to the beforeSend callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxBeforeSend
-        * @data {String} [success] set to the success callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxSuccess
-        * @data {String} [error] set to the error callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxError
-        * @data {String} [serialize] If provided, the value will be forwarded to jQueryEval.
-        *                               If nothing is provided GET requests will serialize themselves while POST requests serialize the parent FORM tag
+        * @data {String} on specifies the event on which this is handled, forms defaulted to 'submit' all other elements to 'click'
+        * @data {String} dataType specify the dataType property passed to the ajax request.
+        * @data {String} type specify the type property passed to the ajax request.
+        * @data {String} beforeSend set to the beforeSend callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxBeforeSend
+        * @data {String} success set to the success callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxSuccess
+        * @data {String} error set to the error callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxError
+        * @data {String} serialize If provided, the value will be forwarded to jQueryEval.
+        *                           If nothing is provided GET requests will serialize themselves while POST requests serialize the parent FORM tag
+        * @data {String} confirm set to a callback which will be invoked after BladeJs has created the request object, but before it is sent
+        *                           Your application will provide the user with a chance to "cancel" the request.
+        *                           If the action is "confirmed" you are responsible for forwarding the request to jQuery - otherwise discard the object
+        *                           BladeJs provides a default implementation, $.fn.blade.defaults.confirmAction, that can be overridden.
+        *                           To signify the default is to be used, simply provide an empty data-blade-confirm attribute.
         */
         ajaxOn: function(){
             return this.each(function(i,el){
@@ -74,8 +71,11 @@
                             : d.get('type') == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
                         beforeSend: $this.blade('resolveObj',d.get('beforeSend')),
                         success: $this.blade('resolveObj',d.get('success')),
-                        error: $this.blade('resolveObj',d.get('error'))
+                        error: $this.blade('resolveObj',d.get('error')),
                     };
+                    if(d.get('confirm') !== undefined){
+                        request.confirm = $this.blade('resolveObj',d.get('confirm')) || $.fn.blade.defaults.confirmAction;
+                    }
                     $this.blade('executeAjax',request);
                     return false;
                 });
@@ -97,7 +97,10 @@
             if(!request.error){
                 request.error = $.fn.blade.defaults.ajaxError;
             }
-            $.ajax(request);
+            if(request.confirm){
+                return request.confirm(request);
+            }
+            return $.ajax(request);
         },
 
         /**
@@ -251,6 +254,12 @@
         * There is no default implementation provided for this method.
         */
         ajaxBeforeSend: null,
+
+        confirmAction: function(request){
+            if(confirm('Please confirm that you wish to proceed with this action.\nClick "OK" to continue; otherwise click "Cancel')){
+                $.ajax(request);
+            } 
+        },
 
         /**
         * The namespace to be expected on all blade related data attributes.
