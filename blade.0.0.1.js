@@ -62,7 +62,10 @@
                         request.confirm = $this.blade('resolveObj',d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
                     }
                     $this.blade('executeAjax',request);
-                    return false;
+                    if(d.bladeReturn){
+                        return d.bladeReturn;
+                    }
+                    return $this.is('form') ? false : true;
                 });
             });
         },
