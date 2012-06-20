@@ -101,8 +101,8 @@
         * @param {String} defaultEvent if no matching event is found then this event will be returned.
         */
         getRegisteredEvent: function(defaultEvent){
-            if(this.data('on')){
-                return this.data('on');
+            if(this.data('bladeOn')){
+                return this.data('bladeOn');
             } 
             if(this.is('form')){
                 return 'submit';
