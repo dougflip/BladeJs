@@ -48,7 +48,7 @@
                     var d = $this.data()
                     var request = {
                         url: $this.is('form') ? $this.attr('action') : d.bladeUrl,
-                        datatype: d.bladeDataType,
+                        dataType: d.bladeDataType,
                         type: d.bladeType || $this.attr('method'),
                         context: $this,
                         data: d.bladeSerialize
