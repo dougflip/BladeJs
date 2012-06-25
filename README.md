@@ -8,7 +8,7 @@ The ajaxOn method is the central piece of BladeJs. Here we use jQuery to select 
 
 <pre>
 $(function(){
-  $('.ajax-on').blade('ajaxOn')
+  $('.ajax-on').blade('ajaxOn');
 });
 </pre>
 
@@ -16,7 +16,7 @@ $(function(){
 Now that we have BladeJs looking for ".ajax-on" elements, let's see how to construct some markup. Here's an example of a select list which needs to issue an ajax request when an "onchange" event is triggered. Notice how values are stored as HTML5 attributes and use a "blade" namespace by default.
 
 <pre>
-&lt;select class="ajax-on" 
+&lt;select class="ajax-on"
           data-blade-on="change" 
           data-blade-url="/Address/UpdateByType" 
           data-blade-serialize=".address-type" 
