@@ -13,46 +13,6 @@
  */
  (function($){
     /*********************************************************
-    *   PRIVATE METHODS
-    *********************************************************/
-    /**
-    * Defaults a success and error handler if they are not provided.
-    * Then passes the provided request parameter to jQuery for execution.
-    * @param {Object} request object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
-    */
-    executeAjax = function(request){
-        if(!request.beforeSend){
-            request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend
-        }
-        if(!request.success){
-            request.success = $.fn.blade.defaults.ajaxSuccess;
-        }
-        if(!request.error){
-            request.error = $.fn.blade.defaults.ajaxError;
-        }
-        if(request.confirm){
-            return request.confirm(request);
-        }
-        return $.ajax(request);
-    };
-
-    /** 
-    * Attempts to resolve an object reference from the provided string.
-    * @param {String} stringName string name of an object to be resolved
-    * @return object reference, null, or undefined.
-    */
-    resolveObj = function(objName){
-        if(!objName){
-            return null;
-        }
-        var result = window[objName];
-        if(!result){
-            $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ objName);
-        }
-        return result;
-    };
-
-    /*********************************************************
     *   PUBLIC JQUERY EXTENSION METHODS:
     *   Map of publicly available functions
     *   accessed via $().blade('functionName')
@@ -272,6 +232,46 @@
                 console.log(msg);
             }
         }
+    };
+
+    /*********************************************************
+    *   PRIVATE METHODS
+    *********************************************************/
+    /**
+    * Defaults a success and error handler if they are not provided.
+    * Then passes the provided request parameter to jQuery for execution.
+    * @param {Object} request object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
+    */
+    executeAjax = function(request){
+        if(!request.beforeSend){
+            request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend
+        }
+        if(!request.success){
+            request.success = $.fn.blade.defaults.ajaxSuccess;
+        }
+        if(!request.error){
+            request.error = $.fn.blade.defaults.ajaxError;
+        }
+        if(request.confirm){
+            return request.confirm(request);
+        }
+        return $.ajax(request);
+    };
+
+    /** 
+    * Attempts to resolve an object reference from the provided string.
+    * @param {String} stringName string name of an object to be resolved
+    * @return object reference, null, or undefined.
+    */
+    resolveObj = function(objName){
+        if(!objName){
+            return null;
+        }
+        var result = window[objName];
+        if(!result){
+            $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ objName);
+        }
+        return result;
     };
 
  })(jQuery);
