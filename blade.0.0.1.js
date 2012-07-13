@@ -1,17 +1,62 @@
 ﻿/*!
  * BladeJs jQuery plugin
+ * Copyright 2012 Doug DiFilippo (dougflip) http://www.dougflip.com/BladeJs
+ * Project repository: https://github.com/dougflip/bladejs
+ *
  * version: 0.0.1 (2012-05-12)
  * @requires jQuery v1.7.0 or later
  *
- * Project repository: https://github.com/dougflip/bladejs
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ *
  */
  (function($){
+    /*********************************************************
+    *   PRIVATE METHODS
+    *********************************************************/
+    /**
+    * Defaults a success and error handler if they are not provided.
+    * Then passes the provided request parameter to jQuery for execution.
+    * @param {Object} request object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
+    */
+    executeAjax = function(request){
+        if(!request.beforeSend){
+            request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend
+        }
+        if(!request.success){
+            request.success = $.fn.blade.defaults.ajaxSuccess;
+        }
+        if(!request.error){
+            request.error = $.fn.blade.defaults.ajaxError;
+        }
+        if(request.confirm){
+            return request.confirm(request);
+        }
+        return $.ajax(request);
+    };
+
+    /** 
+    * Attempts to resolve an object reference from the provided string.
+    * @param {String} stringName string name of an object to be resolved
+    * @return object reference, null, or undefined.
+    */
+    resolveObj = function(objName){
+        if(!objName){
+            return null;
+        }
+        var result = window[objName];
+        if(!result){
+            $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ objName);
+        }
+        return result;
+    };
 
     /*********************************************************
-    *   BLADE METHODS:
+    *   PUBLIC JQUERY EXTENSION METHODS:
     *   Map of publicly available functions
     *   accessed via $().blade('functionName')
-    *   ajaxOn is the default method and accessed as $().blade();
+    *   init is the default method and accessed as $().blade();
     *********************************************************/
     var methods = {
         /**
@@ -54,14 +99,14 @@
                         data: d.bladeSerialize
                             ? $this.blade('jQueryEval',d.bladeSerialize).serialize()
                             : d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
-                        beforeSend: $this.blade('resolveObj',d.bladeBeforeSend),
-                        success: $this.blade('resolveObj',d.bladeSuccess),
-                        error: $this.blade('resolveObj',d.bladeError),
+                        beforeSend: resolveObj(d.bladeBeforeSend),
+                        success: resolveObj(d.bladeSuccess),
+                        error: resolveObj(d.bladeError),
                     };
                     if(d.bladeConfirm !== undefined){
-                        request.confirm = $this.blade('resolveObj',d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
+                        request.confirm = resolveObj(d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
                     }
-                    $this.blade('executeAjax',request);
+                    executeAjax(request);
                     if(d.bladeReturn){
                         return d.bladeReturn;
                     }
@@ -71,30 +116,9 @@
         },
 
         /**
-        * Defaults a success and error handler if they are not provided.
-        * Then passes the provided request parameter to jQuery for execution.
-        * @param {Object} request object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
-        */
-        executeAjax: function(request){
-            if(!request.beforeSend){
-                request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend
-            }
-            if(!request.success){
-                request.success = $.fn.blade.defaults.ajaxSuccess;
-            }
-            if(!request.error){
-                request.error = $.fn.blade.defaults.ajaxError;
-            }
-            if(request.confirm){
-                return request.confirm(request);
-            }
-            return $.ajax(request);
-        },
-
-        /**
-        * Uses the provided jquery element to determine the event which will handle actions.
+        * Uses the selected jquery element to determine the event which will handle actions.
         *   if a @data-on attribute is provided this will be used above anything else.
-        * Otherwise, certain elements carry certain implicit events:
+        * Otherwise, certain elements carry implicit events:
         *   FORM-"submit", SELECT-"change", INPUT:TEXT-"blur"
         * Finally, this will fall back to the provided @defaultEvent 
         *   and if this is not provided then "click" will be returned
@@ -137,26 +161,10 @@
                 return eval('$this.'+match[2]);
             } 
             if (match[1] == 'func'){
-                return this.blade('resolveObj',match[2])(this);
+                return resolveObj(match[2])(this);
             }
             $.fn.blade.defaults.log('BladeJs.jQueryEval: Unable to parse the provided query: '+ query + '. No elements were selected');
             return $();
-        },
-
-        /**
-        * Attempts to resolve an object reference from the provided string.
-        * @param {String} stringName string name of an object to be resolved
-        * @return object reference, null, or undefined.
-        */
-        resolveObj: function(objName){
-            if(!objName){
-                return null;
-            }
-            var result = window[objName];
-            if(!result){
-                $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ objName);
-            }
-            return result;
         },
 
         /**
