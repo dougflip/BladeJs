@@ -5,7 +5,7 @@
  *
  * Project repository: https://github.com/dougflip/bladejs
  */
- ;(function($){
+ (function($){
 
     /*********************************************************
     *   BLADE METHODS:
