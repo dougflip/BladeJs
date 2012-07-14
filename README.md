@@ -1,7 +1,7 @@
 BladeJs jQuery Plugin
 =====================
 
-BladeJs is a small JavaScript library which maps HTML5 data attributes to jQuery AJAX requests. Built as a jQuery plugin the core functionality handles registering events, serializing data, invoking AJAX methods, and passing the response to a JavaScript function. Check out the examples page and [wiki](https://github.com/dougflip/BladeJs/wiki) for a full list of features.
+BladeJs is a small JavaScript library which maps HTML5 data attributes to jQuery AJAX requests. Built as a jQuery plugin the core functionality handles registering events, serializing data, invoking AJAX methods, and passing the response to a JavaScript function. Check out some [examples](http://www.dougflip.com/BladeJs) and [wiki](https://github.com/dougflip/BladeJs/wiki) for a full list of features.
 
 ####The ajaxOn Method
 The ajaxOn method is the central piece of BladeJs. Here we use jQuery to select all elements on the page with an "ajax-on" CSS class and apply the plugin to them.
