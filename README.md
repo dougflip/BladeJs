@@ -27,4 +27,4 @@ Now that we have BladeJs looking for ".ajax-on" elements, let's see how to const
 Now every time the select triggers a "change" event BladeJs will serialize all elements with the "address-type" CSS class, send the values to "/Address/UpdateByType", and pass the response to the ajaxSuccess function.
 
 ####What Else?
-BladeJs is built around defaults and ease of use. For example, in the above markup we can remove the <code>data-blade-on</code> attribute because select elements operate on the change method by default. There is also support for registering global handlers for success, error, and beforeSend callbacks. Check out the [wiki](https://github.com/dougflip/BladeJs/wiki) and examples pages for in depth info.
+BladeJs is built around defaults and ease of use. For example, in the above markup we can remove the <code>data-blade-on</code> attribute because select elements operate on the change method by default. There is also support for registering global handlers for success, error, and beforeSend callbacks. Check out the [wiki](https://github.com/dougflip/BladeJs/wiki) and [examples](http://www.dougflip.com/BladeJs) for in depth info.
