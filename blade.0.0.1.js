@@ -242,7 +242,7 @@
     * Then passes the provided request parameter to jQuery for execution.
     * @param {Object} request object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
     */
-    executeAjax = function(request){
+    var executeAjax = function(request){
         if(!request.beforeSend){
             request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend
         }
@@ -263,7 +263,7 @@
     * @param {String} stringName string name of an object to be resolved
     * @return object reference, null, or undefined.
     */
-    resolveObj = function(objName){
+    var resolveObj = function(objName){
         if(!objName){
             return null;
         }
