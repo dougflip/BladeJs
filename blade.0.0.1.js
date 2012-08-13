@@ -46,32 +46,29 @@
         *                           To signify the default is to be used, simply provide an empty data-blade-confirm attribute.
         */
         ajaxOn: function(){
-            return this.each(function(i,el){
-                var $el = $(el);
-                $el.on($el.blade('getRegisteredEvent'), function(){
-                    $this = $(this);
-                    var d = $this.data()
-                    var request = {
-                        url: $this.is('form') ? $this.attr('action') : d.bladeUrl,
-                        dataType: d.bladeDataType,
-                        type: d.bladeType || $this.attr('method'),
-                        context: $this,
-                        data: d.bladeSerialize
-                            ? $this.blade('jQueryEval',d.bladeSerialize).serialize()
-                            : d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
-                        beforeSend: resolveObj(d.bladeBeforeSend),
-                        success: resolveObj(d.bladeSuccess),
-                        error: resolveObj(d.bladeError),
-                    };
-                    if(d.bladeConfirm !== undefined){
-                        request.confirm = resolveObj(d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
-                    }
-                    executeAjax(request);
-                    if(d.bladeReturn){
-                        return d.bladeReturn;
-                    }
-                    return $this.is('form') ? false : true;
-                });
+            return this.blade('on', function(){
+                $this = $(this);
+                var d = $this.data()
+                var request = {
+                    url: $this.is('form') ? $this.attr('action') : d.bladeUrl,
+                    dataType: d.bladeDataType,
+                    type: d.bladeType || $this.attr('method'),
+                    context: $this,
+                    data: d.bladeSerialize
+                        ? $this.blade('jQueryEval',d.bladeSerialize).serialize()
+                        : d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
+                    beforeSend: resolveObj(d.bladeBeforeSend),
+                    success: resolveObj(d.bladeSuccess),
+                    error: resolveObj(d.bladeError),
+                };
+                if(d.bladeConfirm !== undefined){
+                    request.confirm = resolveObj(d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
+                }
+                executeAjax(request);
+                if(d.bladeReturn){
+                    return d.bladeReturn;
+                }
+                return $this.is('form') ? false : true;
             });
         },
 
@@ -125,6 +122,19 @@
             }
             $.fn.blade.defaults.log('BladeJs.jQueryEval: Unable to parse the provided query: '+ query + '. No elements were selected');
             return $();
+        },
+
+        /**
+        * Registers the provided function via blade.getRegisteredEvent.
+        * In this way we better de-couple the function logic from the event by which is was triggered.
+        * @param {Function} a function to be executed when the registered event is triggered.
+        * @seealso blade.getRegisteredEvent
+        */
+        on: function(func){
+            return this.each(function(i,el){
+                var $el = $(el);
+                $el.on($el.blade('getRegisteredEvent'), func);
+            });
         },
 
         /**
