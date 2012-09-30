@@ -59,7 +59,7 @@
                         : d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
                     beforeSend: resolveObj(d.bladeBeforeSend),
                     success: resolveObj(d.bladeSuccess),
-                    error: resolveObj(d.bladeError),
+                    error: resolveObj(d.bladeError)
                 };
                 if(d.bladeConfirm !== undefined){
                     request.confirm = resolveObj(d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
@@ -98,7 +98,7 @@
         },
 
         /**
-        * Attempts to locate a jQuery set by performing a set of opertations.
+        * Attempts to locate a jQuery set by performing a set of operations.
         * In practice, HTML elements will contain references via a data attribute that will be resolved by this function.
         * For example, a select list may indicate on change it needs to serialize all inputs within its own containing DIV tag:
         *       <select data-serialize="traverse: closest('div').find(':input')">
@@ -127,8 +127,8 @@
         /**
         * Registers the provided function via blade.getRegisteredEvent.
         * In this way we better de-couple the function logic from the event by which is was triggered.
-        * @param {Function} a function to be executed when the registered event is triggered.
-        * @seealso blade.getRegisteredEvent
+        * @param {Function} func a function to be executed when the registered event is triggered.
+        * @see blade.getRegisteredEvent
         */
         on: function(func){
             return this.each(function(i,el){
@@ -163,7 +163,7 @@
         },
 
         /**
-        * Wrapper over @update as a convienence method for making DOM updates.
+        * Wrapper over @update as a convenience method for making DOM updates.
         * @param {String} content the content to be inserted into the DOM
         * @param {String} query uses @jQueryEval to determine which element will be updated
         * @param {String} mode the method which will be used to update the DOM with the new content.
@@ -270,7 +270,7 @@
 
     /** 
     * Attempts to resolve an object reference from the provided string.
-    * @param {String} stringName string name of an object to be resolved
+    * @param {String} objName string name of an object to be resolved
     * @return object reference, null, or undefined.
     */
     var resolveObj = function(objName){
