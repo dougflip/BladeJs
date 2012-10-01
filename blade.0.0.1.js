@@ -55,7 +55,7 @@
                     type: d.bladeType || $this.attr('method'),
                     context: $this,
                     data: d.bladeSerialize
-                        ? typeof d.bladeSerialize === 'string' ? d.bladeSerialize : $this.blade('jQueryEval',d.bladeSerialize).serialize()
+                        ? typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : $this.blade('jQueryEval',d.bladeSerialize).serialize()
                         : d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
                     beforeSend: resolveObj(d.bladeBeforeSend),
                     success: resolveObj(d.bladeSuccess),
