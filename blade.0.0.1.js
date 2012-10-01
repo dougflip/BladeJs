@@ -74,27 +74,31 @@
 
         /**
         * Uses the selected jquery element to determine the event which will handle actions.
-        *   if a @data-on attribute is provided this will be used above anything else.
+        * This will always be an array.
+        * For regular events this will be an array with one element - the event name.
+        * For delegation, this first item in the array is the event
+        *   and the second item is selector to be matched.
+        * If a @data-on attribute is provided this will be used above anything else.
         * Otherwise, certain elements carry implicit events:
         *   FORM-"submit", SELECT-"change", INPUT:TEXT-"blur"
-        * Finally, this will fall back to the provided @defaultEvent 
-        *   and if this is not provided then "click" will be returned
-        * @param {String} defaultEvent if no matching event is found then this event will be returned.
+        * Finally, this will fall back to 'click'
         */
-        getRegisteredEvent: function(defaultEvent){
-            if(this.data('bladeOn')){
-                return this.data('bladeOn');
+        getRegisteredEvent: function(){
+            var d = this.data();
+            if(d.bladeOn){
+                // check for use of 'on' as with delegate
+                return d.bladeOn.split(/\s+\|\s+/);
             } 
             if(this.is('form')){
-                return 'submit';
+                return ['submit'];
             } 
             if (this.is('select')){
-                return 'change';
+                return ['change'];
             } 
             if (this.is('input:text')){
-                return 'blur';
+                return ['blur'];
             }
-            return defaultEvent || 'click';
+            return ['click'];
         },
 
         /**
@@ -133,7 +137,12 @@
         on: function(func){
             return this.each(function(i,el){
                 var $el = $(el);
-                $el.on($el.blade('getRegisteredEvent'), func);
+                var evt = $el.blade('getRegisteredEvent');
+                if(evt.length > 1){
+                  $el.on(evt[0], evt[1], func);
+                } else {
+                  $el.on(evt[0], func);
+                }
             });
         },
 
