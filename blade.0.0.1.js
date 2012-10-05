@@ -92,11 +92,8 @@
             if(this.is('form')){
                 return ['submit'];
             } 
-            if (this.is('select')){
+            if (this.is('select') || this.is('input:text')){
                 return ['change'];
-            } 
-            if (this.is('input:text')){
-                return ['blur'];
             }
             return ['click'];
         },
