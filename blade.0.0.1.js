@@ -119,7 +119,7 @@
                 return $(query);
             } 
             if(match[1] == 'traverse') {
-                return eval('$this.'+match[2]);
+                return eval('this.'+match[2]);
             } 
             if (match[1] == 'func'){
                 return resolveObj(match[2])(this);
