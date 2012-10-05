@@ -115,7 +115,7 @@
             $.fn.blade.defaults.log('BladeJs.jQueryEval: NULL/Empty query provided - returning empty set');
             return $();
           }
-          var match = /^(select|traverse|func):\s*(.*)$/.exec(query);
+          var match = /^(select|traverse|func)\s*:\s*(.*)$/.exec(query);
           if(match && match.length == 3){
             switch(match[1]){
               case 'select':
