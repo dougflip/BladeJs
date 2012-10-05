@@ -111,21 +111,25 @@
         *           "func: someFunction" - a function to be called which is passed this and returns a jQuery object
         */
         jQueryEval: function(query){
+          if(!query){
+            $.fn.blade.defaults.log('BladeJs.jQueryEval: NULL/Empty query provided - returning empty set');
+            return $();
+          }
           var match = /^(select|traverse|func):\s*(.*)$/.exec(query);
-          if(match == null || match.length < 1 ){
-              return $(query);
+          if(match && match.length == 3){
+            switch(match[1]){
+              case 'select':
+                return $(match[2]);
+              case 'traverse':
+                return eval('this.'+match[2]);
+              case 'func':
+                return resolveObj(match[2])(this);
+              default:
+                $.fn.blade.defaults.log('BladeJs.jQueryEval: Unable to parse the provided query: '+ query + '. Returning empty set');
+                return $();
+            }
           }
-          switch(match[1]){
-            case 'select':
-              return $(match[2]);
-            case 'traverse':
-              return eval('this.'+match[2]);
-            case 'func':
-              return resolveObj(match[2])(this);
-            default:
-              $.fn.blade.defaults.log('BladeJs.jQueryEval: Unable to parse the provided query: '+ query + '. No elements were selected');
-              return $();
-          }
+          return $(query);
         },
 
         /**
