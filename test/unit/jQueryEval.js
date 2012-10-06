@@ -5,13 +5,6 @@ test("jQueryEval -- selector only", function(){
   equal('btnTest1', $button.attr('id'), 'jQueryEval should have selected btnTest1');
 });
 
-test("jQueryEval select -- #btnTest1", function(){
-  var $button = $('body').blade('jQueryEval', 'select: #btnTest1');
-  ok($button != null, "NULL was returned from jQueryEval");
-  equal(1, $button.length, 'jQueryEval with explicit select should match 1 button');
-  equal('btnTest1', $button.attr('id'), 'jQueryEval should have selected btnTest1');
-});
-
 test( "jQueryEval traverse -- traverse: closest('.wrapper').find(':input')", function() {
   var $button = $('#btnTest1').blade('jQueryEval',"traverse: closest('.wrapper').find('button')");
   ok($button != null, "NULL was returned from jQueryEval");

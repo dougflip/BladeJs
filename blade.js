@@ -106,7 +106,6 @@
         * This function would receive the data attribute string as query and perform the search relative to the select element (which will be scoped as keyword this).
         * @param {String} query defines the strategy to be used when locating items. The following example formats are supported:
         *           "#someId, .someClass, someTagName" - any valid jQuery selector. Simply gets wrapped in the $ sign.
-        *           "select: #someId, .someClass, someTagName" - same as above just explicitly stated as selector
         *           "traverse: closest('.container').find(':input')" - navigates from/relative to the current context (this). Any chained jQuery functions are accepted
         *           "func: someFunction" - a function to be called which is passed this and returns a jQuery object
         */
@@ -115,11 +114,9 @@
             $.fn.blade.defaults.log('BladeJs.jQueryEval: NULL/Empty query provided - returning empty set');
             return $();
           }
-          var match = /^\s*(select|traverse|func)\s*:\s*(.*)$/.exec(query);
+          var match = /^\s*(traverse|func)\s*:\s*(.*)$/.exec(query);
           if(match && match.length == 3){
             switch(match[1]){
-              case 'select':
-                return $(match[2]);
               case 'traverse':
                 return eval('this.'+match[2]);
               case 'func':
