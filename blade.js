@@ -3,7 +3,7 @@
  * Copyright 2012 Doug DiFilippo (dougflip) http://www.dougflip.com/BladeJs
  * Project repository: https://github.com/dougflip/bladejs
  *
- * version: 0.0.1 (2012-05-12)
+ * version: 0.0.2 (2012-05-12)
  * @requires jQuery v1.7.0 or later
  *
  * Dual licensed under the MIT and GPL licenses:
