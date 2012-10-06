@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit Example</title>
+
+  <link rel="stylesheet" href="qunit-1.10.0.css">
+
+  <script src="lib/jquery-1.8.2.min.js"></script>
+  <script src="qunit-1.10.0.js"></script>
+
+  <script src="unit/jQueryEval.js"></script>
+  <script src="unit/getRegisteredEvent.js"></script>
+  <script src="../blade.js"></script>
+
+  <script type="text/javascript">
+    QUnit.done(function(){
+      // remove all test markup when finished
+      $('#testMarkup').remove();
+    });
+  </script>
+</head>
+<body>
+  <div id="qunit"></div>
+
+  <div id="testMarkup">
+    <div class="wrapper">
+      <input type="hidden" name="html" value="This tests normal selectors" />
+      <button id="btnTest1" class="ajax-on"
+              data-blade-url="/test/html/"
+              data-serialize="traverse: closest('.wrapper').find(':input')">
+        Normal Selector
+      </button>
+    </div>
+
+    <div class="wrapper ajax-on" data-blade-on="click | button">
+      <input type="hidden" name="html" value="This tests delegate selectors" />
+      <button data-blade-url="/test/html/"
+              data-serialize="traverse: closest('.wrapper').find(':input')">
+        Normal Selector
+      </button>
+    </div>
+
+    <div class="wrapper">
+      <button class="ajax-on"
+              data-blade-url="/test/html/"
+              data-serialize='{ "html": "This is straight JSON" }'>
+        Normal Selector
+      </button>
+    </div>
+
+    <form id="UserForm" action="/users/update" method="post">
+      <input id="Id" type="hidden" name="Id" value="2112">
+      <select id="Title" name="Title">
+        <option value="">None</option>
+        <option value="Mr.">Mr.</option>
+        <option value="Mr.">Mrs.</option>
+        <option value="Mr.">Miss</option>
+      </select>
+      <input id="FirstName" type="text" name="FirstName" />
+      <input id="LastName" type="text" name="LastName" />
+      <button type="submit">save</button>
+    </form>
+  </div>
+</body>
+</html>
