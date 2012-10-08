@@ -158,7 +158,7 @@
             return d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize();
           }
 
-          return typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : $this.blade('jQueryEval',d.bladeSerialize).serialize();
+          return typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : this.blade('jQueryEval',d.bladeSerialize).serialize();
         },
 
         /**
