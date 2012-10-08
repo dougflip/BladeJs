@@ -47,7 +47,7 @@
         */
         ajaxOn: function(){
             return this.blade('on', function(){
-                $this = $(this);
+                var $this = $(this);
                 var d = $this.data();
                 var request = {
                     url: $this.is('form') ? $this.attr('action') : d.bladeUrl,
