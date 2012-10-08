@@ -153,8 +153,8 @@
        * @return {*}
        */
         serialize: function(){
-          var data = this.data();
-          if(!data.bladeSerialize){
+          var d = this.data();
+          if(!d.bladeSerialize){
             return d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize();
           }
 
