@@ -11,6 +11,7 @@
 
   <script src="unit/jQueryEval.js"></script>
   <script src="unit/getRegisteredEvent.js"></script>
+  <script src="unit/serialize.js"></script>
   <script src="../blade.js"></script>
 
   <script type="text/javascript">
@@ -57,9 +58,10 @@
         <option value="Mr.">Mrs.</option>
         <option value="Mr.">Miss</option>
       </select>
-      <input id="FirstName" type="text" name="FirstName" />
-      <input id="LastName" type="text" name="LastName" />
-      <button type="submit">save</button>
+      <input id="CustomerInfo" type="hidden" data-blade-serialize='{"CustomerId": 1, "IsActive": true}' />
+      <input id="FirstName" type="text" name="FirstName" value="Geddy" />
+      <input id="LastName" type="text" name="LastName" value="Lee" data-blade-type="POST" />
+      <button id="UserFormSubmitButton" type="submit" data-blade-serialize="traverse: closest('form').find(':input')">save</button>
     </form>
   </div>
 </body>
