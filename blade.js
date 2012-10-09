@@ -155,7 +155,7 @@
         serialize: function(){
           var d = this.data();
           if(!d.bladeSerialize){
-            return d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize();
+            return d.bladeType == 'POST' ? this.closest('form').serialize() : this.serialize();
           }
 
           return typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : this.blade('jQueryEval',d.bladeSerialize).serialize();
