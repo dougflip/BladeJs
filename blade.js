@@ -144,14 +144,14 @@
             });
         },
 
-       /**
-       * Serializes the current element according to Blade conventions.
+        /**
+        * Serializes the current element according to Blade conventions.
         * With no bladeSerialize attribute the following checks are performed:
         *   POSTs serialize the closest form tag; GETs serialize the current element.
         * When bladeSerialize is of type string then the value is forwarded to @jQueryEval
         * When bladeSerialize is any other type then the value is simply returned.
-       * @return {*}
-       */
+        * @return {*}
+        */
         serialize: function(){
           var d = this.data();
           if(!d.bladeSerialize){
