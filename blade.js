@@ -54,9 +54,8 @@
           dataType: d.bladeDataType,
           type: d.bladeType || $this.attr('method'),
           context: $this,
-          data: d.bladeSerialize
-            ? typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : $this.blade('jQueryEval',d.bladeSerialize).serialize()
-            : d.bladeType == 'POST' ? $this.closest('form').serialize() : $this.serialize(),
+          data: d.bladeSerialize ? typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : $this.blade('jQueryEval',d.bladeSerialize).serialize()
+            : d.bladeType === 'POST' ? $this.closest('form').serialize() : $this.serialize(),
           beforeSend: resolveObj(d.bladeBeforeSend),
           success: resolveObj(d.bladeSuccess),
           error: resolveObj(d.bladeError)
@@ -115,7 +114,7 @@
         return $();
       }
       var match = /^\s*(traverse|func)\s*:\s*(.*)$/.exec(query);
-      if(match && match.length == 3){
+      if(match && match.length === 3){
         switch(match[1]){
           case 'traverse':
             return eval('this.'+match[2]);
@@ -155,7 +154,7 @@
     serialize: function(){
       var d = this.data();
       if(!d.bladeSerialize){
-        return d.bladeType == 'POST' ? this.closest('form').serialize() : this.serialize();
+        return d.bladeType === 'POST' ? this.closest('form').serialize() : this.serialize();
       }
       return typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : this.blade('jQueryEval',d.bladeSerialize).serialize();
     },
@@ -277,7 +276,7 @@
    */
   var executeAjax = function(request){
     if(!request.beforeSend){
-      request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend
+      request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend;
     }
     if(!request.success){
       request.success = $.fn.blade.defaults.ajaxSuccess;
