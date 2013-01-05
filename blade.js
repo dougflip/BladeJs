@@ -1,4 +1,4 @@
-﻿/*!
+/*!
  * BladeJs jQuery plugin
  * Copyright 2012 Doug DiFilippo (dougflip) http://www.dougflip.com/BladeJs
  * Project repository: https://github.com/dougflip/bladejs
