@@ -3,7 +3,7 @@
  * Copyright 2012 Doug DiFilippo (dougflip) http://www.dougflip.com/BladeJs
  * Project repository: https://github.com/dougflip/bladejs
  *
- * version: 0.0.2 (2012-05-12)
+ * version: 1.0.0 (2013-01-09)
  * @requires jQuery v1.7.0 or later
  *
  * Dual licensed under the MIT and GPL licenses:
@@ -30,10 +30,17 @@
     /**
      * Main method of the BladeJs plugin
      * Maps provided HTML5 data attributes to a jQuery ajax request object and attempts to send to the server
+     * All data attributes are merged with $.fn.blade.defaults to create the request object.
+     * This means that for any simple type that can be represented as a data attribute
+     *    you may simply declare jQuery AJAX values directly in markup.
+     * The properties listed below are handled explicitly and thus have documentation provided.
+     * It is recommended that any situation beyond this scope should be handled with a custom `beforeSend` handler.
+     * The beforeSend handler will receive the full options argument
+     *    and can make any necessary adjustments to the request.
+     * @data {String} on specifies the event on which this is handled -> see the `on` method
      * @data {String} url specifies the URL of the ajax request. FORM tags may use the ACTION attribute instead.
-     * @data {String} on specifies the event on which this is handled, forms defaulted to 'submit' all other elements to 'click'
      * @data {String} dataType specify the dataType property passed to the ajax request.
-     * @data {String} type specify the type property passed to the ajax request.
+     * @data {String} type specify the type as GET, POST, etc. Forms may use 'action' instead
      * @data {String} beforeSend set to the beforeSend callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxBeforeSend
      * @data {String} success set to the success callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxSuccess
      * @data {String} error set to the error callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxError
@@ -49,23 +56,21 @@
       return this.blade('on', function(){
         var $this = $(this);
         var d = $this.data();
-        var request = {
-          url: $this.is('form') ? $this.attr('action') : d.bladeUrl,
-          dataType: d.bladeDataType,
-          type: d.bladeType || $this.attr('method'),
-          context: $this,
-          data: d.bladeSerialize ? typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : $this.blade('jQueryEval',d.bladeSerialize).serialize()
-            : d.bladeType === 'POST' ? $this.closest('form').serialize() : $this.serialize(),
-          beforeSend: resolveObj(d.bladeBeforeSend),
-          success: resolveObj(d.bladeSuccess),
-          error: resolveObj(d.bladeError)
-        };
-        if(d.bladeConfirm !== undefined){
-          request.confirm = resolveObj(d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
+        var request = $.extend({context: $this}, $.fn.blade.defaults, $this.data());
+        request.url = $this.is('form') ? $this.attr('action') : d.url;
+        request.type = d.type || $this.attr('method');
+        request.serialize = d.bladeSerialize ? typeof d.data !== 'string' ? d.data : $this.blade('jQueryEval',d.data).serialize()
+                                              : request.type === 'POST' ? $this.closest('form').serialize() : $this.serialize();
+        request.beforeSend = resolveObj(d.beforeSend);
+        request.success = resolveObj(d.success);
+        request.error = resolveObj(d.error);
+
+        if(request.confirm !== undefined){
+          request.confirm = resolveObj(request.confirm);
         }
         executeAjax(request);
-        if(d.bladeReturn){
-          return d.bladeReturn;
+        if(request.return){
+          return request.return;
         }
         return $this.is('form') ? false : true;
       });
