@@ -27,7 +27,12 @@ Now every time the select triggers a <code>change</code> event BladeJs will seri
 BladeJs uses defaults as much as possible, but any of these values can be overridden via data attributes. The idea is for the plugin to work effortlessly for common scenarios, but provide the flexibility to handle more advanced situations. Check out the [wiki](https://github.com/dougflip/BladeJs/wiki) and [examples](http://www.dougflip.com/BladeJs) for more in depth info.
 
 ####Unit Tests
-Opening the test/index.html file in any browser will execute all of the unit tests.
-The tests themselves are located in the test/unit directory.
-They are organized into files that each test a particular piece of functionality.
-Again, running the tests is as simple as opening the index.html file and viewing the results.
+Unit tests are written using [QUnit](http://qunitjs.com/).
+Viewing the unit tests in the browser is as simple as opening `test/index.html`.
+
+A `grunt.js` file is also provided to run the unit tests from the command line using [Grunt](http://gruntjs.com/).
+Please refer to the [Grunt documentation](https://github.com/gruntjs/grunt/blob/0.3-stable/docs/toc.md) for full details, but here is a quickstart for what its worth:
+- install Grunt via npm: `npm install -g grunt`
+- ensure Grunt is added to your path - for me this meant: `PATH=$PATH:/usr/local/share/npm/bin ; export PATH`
+- I believe you need [PhantomJS](http://phantomjs.org/) installed (I already had it installed)
+- run the tests! `grunt test --verbose`
