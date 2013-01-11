@@ -59,7 +59,7 @@
         var request = $.extend({context: $this}, $.fn.blade.defaults, $this.data());
         request.url = $this.is('form') ? $this.attr('action') : d.url;
         request.type = d.type || $this.attr('method');
-        request.serialize = d.bladeSerialize ? typeof d.data !== 'string' ? d.data : $this.blade('jQueryEval',d.data).serialize()
+        request.data = d.data ? typeof d.data !== 'string' ? d.data : $this.blade('jQueryEval',d.data).serialize()
                                               : request.type === 'POST' ? $this.closest('form').serialize() : $this.serialize();
         request.beforeSend = resolveObj(d.beforeSend);
         request.success = resolveObj(d.success);
@@ -69,8 +69,8 @@
           request.confirm = resolveObj(request.confirm);
         }
         executeAjax(request);
-        if(request.return !== undefined){
-          return return request.return;;
+        if(request.stopPropagation !== undefined){
+          return request.stopPropagation;
         }
         return $this.is('form') ? false : true;
       });
@@ -89,9 +89,9 @@
      */
     getRegisteredEvent: function(){
       var d = this.data();
-      if(d.bladeOn){
+      if(d.on){
         // check for use of 'on' as with delegate
-        return d.bladeOn.split(/\s+\|\s+/);
+        return d.on.split(/\s+\|\s+/);
       }
       if(this.is('form')){
         return ['submit'];
@@ -158,10 +158,10 @@
      */
     serialize: function(){
       var d = this.data();
-      if(!d.bladeSerialize){
-        return d.bladeType === 'POST' ? this.closest('form').serialize() : this.serialize();
+      if(!d.data){
+        return d.type === 'POST' ? this.closest('form').serialize() : this.serialize();
       }
-      return typeof d.bladeSerialize !== 'string' ? d.bladeSerialize : this.blade('jQueryEval',d.bladeSerialize).serialize();
+      return typeof d.data !== 'string' ? d.data : this.blade('jQueryEval',d.data).serialize();
     },
 
     /**

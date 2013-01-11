@@ -29,24 +29,24 @@
     <div class="wrapper">
       <input type="hidden" name="html" value="This tests normal selectors" />
       <button id="btnTest1" class="ajax-on"
-              data-blade-url="/test/html/"
-              data-serialize="traverse: closest('.wrapper').find(':input')">
+              data-url="/test/html/"
+              data-data="traverse: closest('.wrapper').find(':input')">
         Normal Selector
       </button>
     </div>
 
-    <div class="wrapper ajax-on" data-blade-on="click | button">
+    <div class="wrapper ajax-on" data-on="click | button">
       <input type="hidden" name="html" value="This tests delegate selectors" />
-      <button data-blade-url="/test/html/"
-              data-serialize="traverse: closest('.wrapper').find(':input')">
+      <button data-url="/test/html/"
+              data-data="traverse: closest('.wrapper').find(':input')">
         Normal Selector
       </button>
     </div>
 
     <div class="wrapper">
       <button class="ajax-on"
-              data-blade-url="/test/html/"
-              data-serialize='{ "html": "This is straight JSON" }'>
+              data-url="/test/html/"
+              data-data='{ "html": "This is straight JSON" }'>
         Normal Selector
       </button>
     </div>
@@ -59,10 +59,10 @@
         <option value="Mr.">Mrs.</option>
         <option value="Mr.">Miss</option>
       </select>
-      <input id="CustomerInfo" type="hidden" data-blade-serialize='{"CustomerId": 1, "IsActive": true}' />
+      <input id="CustomerInfo" type="hidden" data-data='{"CustomerId": 1, "IsActive": true}' />
       <input id="FirstName" type="text" name="FirstName" value="Geddy" />
-      <input id="LastName" type="text" name="LastName" value="Lee" data-blade-type="POST" />
-      <button id="UserFormSubmitButton" type="submit" data-blade-serialize="traverse: closest('form').find(':input')" data-blade-return="false">save</button>
+      <input id="LastName" type="text" name="LastName" value="Lee" data-type="POST" />
+      <button id="UserFormSubmitButton" type="submit" data-data="traverse: closest('form').find(':input')" data-stop-propagation="false">save</button>
     </form>
   </div>
 </body>
