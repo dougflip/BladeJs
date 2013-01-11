@@ -69,8 +69,8 @@
           request.confirm = resolveObj(request.confirm);
         }
         executeAjax(request);
-        if(request.return){
-          return request.return;
+        if(request.return !== undefined){
+          return return request.return;;
         }
         return $this.is('form') ? false : true;
       });
