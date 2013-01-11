@@ -64,7 +64,7 @@
           request.confirm = resolveObj(d.bladeConfirm) || $.fn.blade.defaults.confirmAction;
         }
         executeAjax(request);
-        if(d.bladeReturn){
+        if(d.bladeReturn !== undefined){
           return d.bladeReturn;
         }
         return $this.is('form') ? false : true;

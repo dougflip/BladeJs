@@ -9,6 +9,7 @@
   <script src="lib/jquery-1.8.2.min.js"></script>
   <script src="qunit-1.10.0.js"></script>
 
+  <script src="unit/ajaxOn.js"></script>
   <script src="unit/jQueryEval.js"></script>
   <script src="unit/getRegisteredEvent.js"></script>
   <script src="unit/serialize.js"></script>
@@ -61,7 +62,7 @@
       <input id="CustomerInfo" type="hidden" data-blade-serialize='{"CustomerId": 1, "IsActive": true}' />
       <input id="FirstName" type="text" name="FirstName" value="Geddy" />
       <input id="LastName" type="text" name="LastName" value="Lee" data-blade-type="POST" />
-      <button id="UserFormSubmitButton" type="submit" data-blade-serialize="traverse: closest('form').find(':input')">save</button>
+      <button id="UserFormSubmitButton" type="submit" data-blade-serialize="traverse: closest('form').find(':input')" data-blade-return="false">save</button>
     </form>
   </div>
 </body>
