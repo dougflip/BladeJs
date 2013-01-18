@@ -3,7 +3,7 @@
  * Copyright 2012 Doug DiFilippo (dougflip) http://www.dougflip.com/BladeJs
  * Project repository: https://github.com/dougflip/bladejs
  *
- * version: 1.0.0 (2013-01-09)
+ * version: 0.0.3 (2013-01-09)
  * @requires jQuery v1.7.0 or later
  *
  * Dual licensed under the MIT and GPL licenses:
@@ -31,36 +31,24 @@
      * Main method of the BladeJs plugin
      * Maps provided HTML5 data attributes to a jQuery ajax request object and attempts to send to the server
      * All data attributes are merged with $.fn.blade.defaults to create the request object.
-     * This means that for any simple type that can be represented as a data attribute
-     *    you may simply declare jQuery AJAX values directly in markup.
-     * The properties listed below are handled explicitly and thus have documentation provided.
+     * This means that any value type property supported by jQuery AJAX can simply be supplied as a data attribute.
      * It is recommended that any situation beyond this scope should be handled with a custom `beforeSend` handler.
-     * The beforeSend handler will receive the full options argument
-     *    and can make any necessary adjustments to the request.
-     * @data {String} on specifies the event on which this is handled -> see the `on` method
-     * @data {String} url specifies the URL of the ajax request. FORM tags may use the ACTION attribute instead.
-     * @data {String} dataType specify the dataType property passed to the ajax request.
-     * @data {String} type specify the type as GET, POST, etc. Forms may use 'action' instead
-     * @data {String} beforeSend set to the beforeSend callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxBeforeSend
-     * @data {String} success set to the success callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxSuccess
-     * @data {String} error set to the error callback of the jQuery request object - defaulted to $.fn.blade.defaults.ajaxError
-     * @data {String} serialize If provided, the value will be forwarded to jQueryEval.
-     *                           If nothing is provided GET requests will serialize themselves while POST requests serialize the parent FORM tag
      * @data {String} confirm set to a callback which will be invoked after BladeJs has created the request object, but before it is sent
-     *                           Your application will provide the user with a chance to "cancel" the request.
-     *                           If the action is "confirmed" you are responsible for forwarding the request to jQuery - otherwise discard the object
-     *                           BladeJs provides a default implementation, $.fn.blade.defaults.confirmAction, that can be overridden.
-     *                           To signify the default is to be used, simply provide an empty data-blade-confirm attribute.
+     *                Your application will provide the user with a chance to "cancel" the request.
+     *                If the action is "confirmed" you are responsible for forwarding the request to jQuery - otherwise discard the object
+     *                BladeJs provides a default implementation, $.fn.blade.defaults.confirmAction, that can be overridden.
+     *                To signify the default is to be used, simply provide an empty data-blade-confirm attribute.
      */
     ajaxOn: function(){
       return this.blade('on', function(){
         var $this = $(this);
         var d = $this.data();
+
+        // combine defaults with data atts
         var request = $.extend({context: $this}, $.fn.blade.defaults, $this.data());
-        request.url = $this.is('form') ? $this.attr('action') : d.url;
-        request.type = d.type || $this.attr('method');
-        request.data = d.data ? typeof d.data !== 'string' ? d.data : $this.blade('jQueryEval',d.data).serialize()
-                                              : request.type === 'POST' ? $this.closest('form').serialize() : $this.serialize();
+        request.data = $this.blade('serialize');
+
+        // resolve supported callback functions
         request.beforeSend = resolveObj(d.beforeSend);
         request.success = resolveObj(d.success);
         request.error = resolveObj(d.error);
@@ -68,11 +56,10 @@
         if(request.confirm !== undefined){
           request.confirm = resolveObj(request.confirm);
         }
+
         executeAjax(request);
-        if(request.stopPropagation !== undefined){
-          return request.stopPropagation;
-        }
-        return $this.is('form') ? false : true;
+
+        return request.stopPropagation === undefined ? false : request.stopPropagation;
       });
     },
 
@@ -148,6 +135,8 @@
       });
     },
 
+    // update this to NOT consider 'type'
+    //  should just be a straight serialization based on values
     /**
      * Serializes the current element according to Blade conventions.
      * With no bladeSerialize attribute the following checks are performed:
@@ -157,11 +146,34 @@
      * @return {*}
      */
     serialize: function(){
-      var d = this.data();
-      if(!d.data){
-        return d.type === 'POST' ? this.closest('form').serialize() : this.serialize();
+      // if there is no data attribute then serialize self
+      // if the data attribute is an object -- return the object
+      // if the data attribute is a string, call jQueryEval then return the serialize()
+      var toSerialize = this.data('data');
+      if(!toSerialize){
+        return this.serialize();
       }
-      return typeof d.data !== 'string' ? d.data : this.blade('jQueryEval',d.data).serialize();
+      if(typeof toSerialize !== 'string'){
+        return toSerialize;
+      }
+      return this.blade('jQueryEval', toSerialize).serialize();
+    },
+
+    /**
+     * Triggers an event on the specified element on a specified event.
+     * Example, a dropdown can be registered to trigger a form 'submit' on 'change'
+     * @data {String} on the event which will initiate the trigger call
+     * @data {String} selector a selector (fed to jQueryEval) which specifies the element to be triggered
+     * @data {String} event the event to be triggered on the target element
+     * Example: <input data-on="change" data-selector="#myForm" data-trigger="submit" />
+     *          The change event on the input will cause submit to trigger on #myForm
+     */
+    triggerOn: function(){
+      return this.blade('on', function(){
+        var $this = $(this);
+        var data = $this.data();
+        $(this).blade('jQueryEval', data.selector).trigger(data.event);
+      });
     },
 
     /**

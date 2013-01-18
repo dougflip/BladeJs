@@ -32,14 +32,3 @@ test('The ajaxOn method serializes a form', function() {
 
   $('#UserForm').blade('ajaxOn').submit();
 });
-
-test('The ajaxOn method looks for a parent form when POST is specified', function() {
-
-  $.fn.blade({ajaxBeforeSend:function(xhr, settings){
-    ok(settings !== null, 'Settings was null!');
-    deepEqual('POST', settings.type, 'Incorrect request Type was set.');
-    deepEqual($('#UserForm').serialize(), settings.data, 'Form was not properly serialized');
-  }});
-
-  $('#LastName').blade('ajaxOn').change();
-});

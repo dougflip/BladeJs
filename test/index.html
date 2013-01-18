@@ -13,6 +13,7 @@
   <script src="unit/jQueryEval.js"></script>
   <script src="unit/getRegisteredEvent.js"></script>
   <script src="unit/serialize.js"></script>
+  <script src="unit/triggerOn.js"></script>
   <script src="../blade.js"></script>
 
   <script type="text/javascript">
@@ -51,9 +52,9 @@
       </button>
     </div>
 
-    <form id="UserForm" action="/users/update" method="post">
+    <form id="UserForm" data-url="/users/update" data-type="post">
       <input id="Id" type="hidden" name="Id" value="2112">
-      <select id="Title" name="Title">
+      <select id="Title" name="Title" data-selector="#UserForm" data-event="submit">
         <option value="">None</option>
         <option value="Mr.">Mr.</option>
         <option value="Mr.">Mrs.</option>
@@ -61,7 +62,8 @@
       </select>
       <input id="CustomerInfo" type="hidden" data-data='{"CustomerId": 1, "IsActive": true}' />
       <input id="FirstName" type="text" name="FirstName" value="Geddy" />
-      <input id="LastName" type="text" name="LastName" value="Lee" data-type="POST" />
+      <input id="MiddleName" type="text" name="MiddleName" value="Lee" data-data="" />
+      <input id="LastName" type="text" name="LastName" value="Lee" data-data="#FirstName, #MiddleName" />
       <button id="UserFormSubmitButton" type="submit" data-data="traverse: closest('form').find(':input')" data-stop-propagation="false">save</button>
     </form>
   </div>
