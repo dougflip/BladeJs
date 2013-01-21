@@ -49,12 +49,12 @@
         request.data = $this.blade('serialize');
 
         // resolve supported callback functions
-        request.beforeSend = resolveObj(d.beforeSend);
-        request.success = resolveObj(d.success);
-        request.error = resolveObj(d.error);
+        request.beforeSend = resolveObjectOrDefault(d.beforeSend);
+        request.success = resolveObjectOrDefault(d.success);
+        request.error = resolveObjectOrDefault(d.error);
 
         if(request.confirm !== undefined){
-          request.confirm = resolveObj(request.confirm);
+          request.confirm = resolveObjectOrDefault(request.confirm);
         }
 
         executeAjax(request);
@@ -111,7 +111,7 @@
           case 'traverse':
             return eval('this.'+match[2]);
           case 'func':
-            return resolveObj(match[2])(this);
+            return resolveObjectOrDefault(match[2])(this);
         }
       }
       return $(query);
@@ -308,19 +308,16 @@
   };
 
   /**
-   * Attempts to resolve an object reference from the provided string.
-   * @param {String} objName string name of an object to be resolved
-   * @return object reference, null, or undefined.
+   * Attempts to locate an object by string name.
+   * First checks against the provided context (which is defaulted to document)
+   *  and if not found, will try to 'eval' the string for resolution.
+   * @param {String} objName the name of the object to be resolved
+   * @param {Object} objContext an object to which the string name belongs -- this can save an eval call
+   * @return {Object} a reference to the object -- undefined if not found
    */
-  var resolveObj = function(objName){
-    if(!objName){
-      return null;
-    }
-    var result = window[objName];
-    if(!result){
-      $.fn.blade.defaults.log('BladeJs.resolveObj: Unable to resolve object of name: '+ objName);
-    }
-    return result;
+  var resolveObjectOrDefault = function(objName, objContext){
+    var ctx = objContext || document;
+    return ctx[objName] || eval(objName);
   };
 
 })(jQuery);
