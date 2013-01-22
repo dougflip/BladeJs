@@ -49,12 +49,12 @@
         request.data = $this.blade('serialize');
 
         // resolve supported callback functions
-        request.beforeSend = resolveObjectOrDefault(d.beforeSend);
-        request.success = resolveObjectOrDefault(d.success);
-        request.error = resolveObjectOrDefault(d.error);
+        request.beforeSend = $.fn.blade.utils.resolveObject(d.beforeSend);
+        request.success = $.fn.blade.utils.resolveObject(d.success);
+        request.error = $.fn.blade.utils.resolveObject(d.error);
 
         if(request.confirm !== undefined){
-          request.confirm = resolveObjectOrDefault(request.confirm);
+          request.confirm = $.fn.blade.utils.resolveObject(request.confirm);
         }
 
         executeAjax(request);
@@ -111,7 +111,7 @@
           case 'traverse':
             return eval('this.'+match[2]);
           case 'func':
-            return resolveObjectOrDefault(match[2])(this);
+            return $.fn.blade.utils.resolveObject(match[2])(this);
         }
       }
       return $(query);
@@ -284,6 +284,24 @@
   };
 
   /*********************************************************
+   *   PUBLIC METHODS
+   *********************************************************/
+  $.fn.blade.utils = {
+    /**
+     * Attempts to locate an object by string name.
+     * First checks against the provided context (which is defaulted to document)
+     *  and if not found, will try to 'eval' the string for resolution.
+     * @param {String} objName the name of the object to be resolved
+     * @param {Object} objContext an object to which the string name belongs -- this can save an eval call
+     * @return {Object} a reference to the object -- undefined if not found
+     */
+    resolveObject: function(objName, objContext){
+      var ctx = objContext || document;
+      return ctx[objName] || eval(objName);
+    }
+  };
+
+  /*********************************************************
    *   PRIVATE METHODS
    *********************************************************/
   /**
@@ -306,18 +324,4 @@
     }
     return $.ajax(request);
   };
-
-  /**
-   * Attempts to locate an object by string name.
-   * First checks against the provided context (which is defaulted to document)
-   *  and if not found, will try to 'eval' the string for resolution.
-   * @param {String} objName the name of the object to be resolved
-   * @param {Object} objContext an object to which the string name belongs -- this can save an eval call
-   * @return {Object} a reference to the object -- undefined if not found
-   */
-  var resolveObjectOrDefault = function(objName, objContext){
-    var ctx = objContext || document;
-    return ctx[objName] || eval(objName);
-  };
-
 })(jQuery);
