@@ -55,7 +55,7 @@
 
         executeAjax(request);
 
-        return request.stopPropagation === undefined ? false : request.stopPropagation;
+        return request.propagate;
       });
     },
 
@@ -240,6 +240,12 @@
     error: function(jqxhr, status, error){
       $.fn.blade.utils.log('BladeJs.defaults.ajaxError: Request failed with error: '+ error + ' and status: ' + status);
     },
+
+    /**
+     * Should the handler registered for ajaxOn continue propagation.
+     * This is defaulted to false so all AJAX calls by default will not propagate.
+     */
+    propagate: false,
 
     /**
      * Default ajax success handler - called if no other method is specified
