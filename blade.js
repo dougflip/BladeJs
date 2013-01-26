@@ -42,19 +42,15 @@
     ajaxOn: function(){
       return this.blade('on', function(){
         var $this = $(this);
-        var d = $this.data();
 
         // combine defaults with data atts
         var request = $.extend({context: $this}, $.fn.blade.defaults, $this.data());
         request.data = $this.blade('serialize');
 
-        // resolve supported callback functions
-        request.beforeSend = $.fn.blade.utils.resolveObject(d.beforeSend);
-        request.success = $.fn.blade.utils.resolveObject(d.success);
-        request.error = $.fn.blade.utils.resolveObject(d.error);
-
-        if(request.confirm !== undefined){
-          request.confirm = $.fn.blade.utils.resolveObject(request.confirm);
+        for(var i=0; i < callbacks.length; i++){
+          if(typeof request[callbacks[i]] === 'string'){
+            request[callbacks[i]] = $.fn.blade.utils.resolveObject(request[callbacks[i]]);
+          }
         }
 
         executeAjax(request);
@@ -241,7 +237,7 @@
      * This should be replaced by specifying a new method via $.fn.blade({ajaxError:function(){}});
      * This implementation simply logs the server response.
      */
-    ajaxError: function(jqxhr, status, error){
+    error: function(jqxhr, status, error){
       $.fn.blade.defaults.log('BladeJs.defaults.ajaxError: Request failed with error: '+ error + ' and status: ' + status);
     },
 
@@ -250,25 +246,8 @@
      * This should be replaced by specifying a new method via $.fn.blade({ajaxSuccess:function(){}});
      * This implementation simply logs the server response.
      */
-    ajaxSuccess: function(response){
+    success: function(response){
       $.fn.blade.defaults.log('BladeJs.defaults.ajaxSuccess: Request succeeded with response: '+ response);
-    },
-
-    /**
-     * Default ajax before send handler
-     * There is no default implementation provided for this method.
-     */
-    ajaxBeforeSend: null,
-
-    /**
-     * Default function to be executed when an action requires user confirmation.
-     * This default implementation simply shows a browser confirm window before sending the request to jQuery.
-     * @ param {object} request The request object, fully populated by Blade, which is to be passed to jQuery if the action is confirmed.
-     */
-    confirmAction: function(request){
-      if(confirm('Please confirm that you wish to proceed with this action.\nClick "OK" to continue; otherwise click "Cancel')){
-        $.ajax(request);
-      }
     },
 
     /**
@@ -305,23 +284,15 @@
    *   PRIVATE METHODS
    *********************************************************/
   /**
-   * Defaults a success and error handler if they are not provided.
+   * Checks for a confirm handler.
    * Then passes the provided request parameter to jQuery for execution.
-   * @param {Object} request object that will passed directly to jQuery - any property on this object will be passed to $.ajax.
+   * @param {Object} request object that will passed directly to jQuery
+   *                          any property on this object will be passed to $.ajax.
+   *                          If request.confirm is present, then the function will be executed instead
    */
   var executeAjax = function(request){
-    if(!request.beforeSend){
-      request.beforeSend = $.fn.blade.defaults.ajaxBeforeSend;
-    }
-    if(!request.success){
-      request.success = $.fn.blade.defaults.ajaxSuccess;
-    }
-    if(!request.error){
-      request.error = $.fn.blade.defaults.ajaxError;
-    }
-    if(request.confirm){
-      return request.confirm(request);
-    }
-    return $.ajax(request);
+    return request.confirm ? request.confirm(request) : $.ajax(request);
   };
+
+  var callbacks = ['success', 'error', 'beforeSend', 'confirm'];
 })(jQuery);
