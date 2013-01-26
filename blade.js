@@ -98,7 +98,7 @@
      */
     jQueryEval: function(query){
       if(!query){
-        $.fn.blade.defaults.log('BladeJs.jQueryEval: NULL/Empty query provided - returning empty set');
+        $.fn.blade.utils.log('BladeJs.jQueryEval: NULL/Empty query provided - returning empty set');
         return $();
       }
       var match = /^\s*(traverse|func)\s*:\s*(.*)$/.exec(query);
@@ -222,7 +222,7 @@
     } else if ( typeof method === 'object' || ! method ) {
       return methods.init.apply( this, arguments );
     } else {
-      $.fn.blade.defaults.log('Method ' +  method + ' does not exist on jQuery.blade' );
+      $.fn.blade.utils.log('Method ' +  method + ' does not exist on jQuery.blade' );
     }
   };
 
@@ -238,7 +238,7 @@
      * This implementation simply logs the server response.
      */
     error: function(jqxhr, status, error){
-      $.fn.blade.defaults.log('BladeJs.defaults.ajaxError: Request failed with error: '+ error + ' and status: ' + status);
+      $.fn.blade.utils.log('BladeJs.defaults.ajaxError: Request failed with error: '+ error + ' and status: ' + status);
     },
 
     /**
@@ -247,18 +247,7 @@
      * This implementation simply logs the server response.
      */
     success: function(response){
-      $.fn.blade.defaults.log('BladeJs.defaults.ajaxSuccess: Request succeeded with response: '+ response);
-    },
-
-    /**
-     * Default log method used by blade to record errors and other interesting events.
-     * This should be replaced by specifying a new method via $.fn.blade({log:function(){}});
-     * This implementation simply attempts to log information to the browser console log.
-     */
-    log: function(msg){
-      if(window.console && console.log){
-        console.log(msg);
-      }
+      $.fn.blade.utils.log('BladeJs.defaults.ajaxSuccess: Request succeeded with response: '+ response);
     }
   };
 
@@ -266,6 +255,16 @@
    *   PUBLIC METHODS
    *********************************************************/
   $.fn.blade.utils = {
+    /**
+     * Basic log method used by blade to record errors and other interesting events.
+     * This can easily be replaced by specifying a new method via $.fn.blade.utils.log = yourLogFunction;
+     * This implementation simply attempts to log information to the browser console log.
+     */
+    log: function(msg){
+      if(window.console && console.log){
+        console.log(msg);
+      }
+    },
     /**
      * Attempts to locate an object by string name.
      * First checks against the provided context (which is defaulted to document)
