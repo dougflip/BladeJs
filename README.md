@@ -14,7 +14,7 @@ Then we'll wire any element with the CSS class <code>ajax-on</code> to be handle
 
 <pre>
 $(function(){
-  $.fn.blade({ajaxSuccess: myapp.blade.success_default, ajaxError: myapp.blade.error_default});
+  $.fn.blade({success: myapp.blade.success_default, error: myapp.blade.error_default});
   $('.ajax-on').blade('ajaxOn');
 });
 </pre>
@@ -27,7 +27,7 @@ Let's build a select list which will make an AJAX request on change.
 
 Now every time the select triggers a `change` event
 BladeJs will serialize all elements with the "address-type" CSS class,
-send the values to "/Address/UpdateByType", and pass the response to the myapp.blade.success_default function.
+send the values to "/Address/UpdateByType", and pass the response to the correct callback function.
 
 ####More Info
 BladeJs uses defaults as much as possible, but any of these values can be overridden via data attributes.
