@@ -10,6 +10,7 @@
   <script src="qunit-1.10.0.js"></script>
 
   <script src="unit/ajaxOn.js"></script>
+  <script src="unit/callbacks.js"></script>
   <script src="unit/jQueryEval.js"></script>
   <script src="unit/getRegisteredEvent.js"></script>
   <script src="unit/log.js"></script>
@@ -68,6 +69,11 @@
       <input id="LastName" type="text" name="LastName" value="Lee" data-data="#FirstName, #MiddleName" />
       <button id="UserFormSubmitButton" type="submit" data-data="traverse: closest('form').find(':input')">save</button>
     </form>
+
+    <div class="test-callbacks">
+      <input class="default-callbacks" />
+      <input class="custom-callbacks" data-success="customSuccess" data-error="customError" />
+    </div>
   </div>
 </body>
 </html>
