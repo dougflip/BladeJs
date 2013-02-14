@@ -42,19 +42,8 @@
     ajaxOn: function(){
       return this.blade('on', function(){
         var $this = $(this);
-
-        // combine defaults with data atts
-        var request = $.extend({context: $this}, $.fn.blade.defaults, $this.data());
-        request.data = $this.blade('serialize');
-
-        for(var i=0; i < callbacks.length; i++){
-          if(typeof request[callbacks[i]] === 'string'){
-            request[callbacks[i]] = $.fn.blade.utils.resolveObject(request[callbacks[i]]);
-          }
-        }
-
+        var request = $.fn.blade.utils.buildRequest($this, $this.data(), $this.blade('serialize'));
         executeAjax(request);
-
         return request.propagate;
       });
     },
@@ -261,6 +250,25 @@
    *   PUBLIC METHODS
    *********************************************************/
   $.fn.blade.utils = {
+    /**
+     * Builds up the actual jQuery Request object following Blade conventions
+     * @param {object} context this will be set as the context of the request
+     *                          Internally, Blade provides the initiating element - i.e. who triggered the event.
+     * @param {object} overrides an object to override the Blade defaults
+     *                          Internally, Blade provides the full list of data attributes
+     * @param {object} data the actual value that will be set to request.data
+     *                          Internally, Blade provides the result of $this.blade('serialize')
+     * @return {object} the fully built request object with all handlers resolved
+     */
+    buildRequest: function(context, overrides, data){
+      var request = $.extend({context: context}, $.fn.blade.defaults, overrides, { data: data  });
+      for(var i=0; i < callbacks.length; i++){
+        if(typeof request[callbacks[i]] === 'string'){
+          request[callbacks[i]] = $.fn.blade.utils.resolveObject(request[callbacks[i]]);
+        }
+      }
+      return request;
+    },
     /**
      * Basic log method used by blade to record errors and other interesting events.
      * This can easily be replaced by specifying a new method via $.fn.blade.utils.log = yourLogFunction;
