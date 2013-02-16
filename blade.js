@@ -175,6 +175,7 @@
         var $this = $(this);
         var data = $this.data();
         $(this).blade('jQueryEval', data.selector).trigger(data.event);
+        return data.propagate || $.fn.blade.defaults.propagate;
       });
     },
 

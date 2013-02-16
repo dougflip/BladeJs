@@ -13,10 +13,10 @@
   <script src="integration/getRegisteredEvent.js"></script>
   <script src="integration/jQueryEval.js"></script>
   <script src="integration/serialize.js"></script>
+  <script src="integration/triggerOn.js"></script>
   <script src="unit/buildRequest.js"></script>
   <script src="unit/log.js"></script>
   <script src="unit/resolveObject.js"></script>
-  <script src="unit/triggerOn.js"></script>
   <script src="../blade.js"></script>
 
   <script type="text/javascript">
@@ -31,7 +31,7 @@
 
   <div id="testMarkup">
 
-    <!-- // *** Test markup for ajaxOn *** -->
+    <!-- // ajaxOn                 **************************************** -->
     <div id="ajaxOn" class="test-container">
       <form class="get-form">
         <input class="single-field-no-data" name="FirstName" value="Geddy" />
@@ -47,7 +47,7 @@
              data-data="traverse: closest('.test-container').find('.get-form')"></button>
     </div>
 
-    <!-- // *** Test markup for getRegisteredEvent *** -->
+    <!-- // getRegisteredEvent     **************************************** -->
     <div id="getRegisteredEvent" class="test-container">
 
       <button class="default-for-button"></button>
@@ -58,10 +58,9 @@
       <input class="override-default-with-on" data-on="hover" />
     </div>
 
-    <!--  // *** Test markup for jQueryEval plugin method *** -->
+    <!-- // jQueryEval             **************************************** -->
     <div id="jQueryEval" class="test-container">
 
-      <!-- // target elements to be selected by the eval method -->
       <input id="jQueryEvalTarget1" class="jquery-eval-target" />
       <input id="jQueryEvalTarget2" class="jquery-eval-target" />
 
@@ -74,7 +73,7 @@
       <button class="null-query"></button>
     </div>
 
-    <!-- // *** Test markup for serialize *** -->
+    <!-- // serialize             **************************************** -->
     <div id="serialize" class="test-container">
 
       <input class="no-data-attribute" name="FirstName" value="Geddy" />
@@ -84,20 +83,18 @@
                 data-data="traverse: closest('.test-container').find(':input[name=FirstName]')" />
     </div>
 
-    <form id="UserForm" data-url="/users/update" data-type="post">
-      <input id="Id" type="hidden" name="Id" value="2112">
-      <select id="Title" name="Title" data-selector="#UserForm" data-event="submit">
-        <option value="">None</option>
-        <option value="Mr.">Mr.</option>
-        <option value="Mr.">Mrs.</option>
-        <option value="Mr.">Miss</option>
-      </select>
-      <input id="CustomerInfo" type="hidden" data-data='{"CustomerId": 1, "IsActive": true}' />
-      <input id="FirstName" type="text" name="FirstName" value="Geddy" />
-      <input id="MiddleName" type="text" name="MiddleName" value="Lee" data-data="" />
-      <input id="LastName" type="text" name="LastName" value="Lee" data-data="#FirstName, #MiddleName" />
-      <button id="UserFormSubmitButton" type="submit" data-data="traverse: closest('form').find(':input')">save</button>
-    </form>
+    <!-- // triggerOn             **************************************** -->
+    <div id="triggerOn" class="test-container">
+
+      <form id="triggerOnForm"></form>
+      <form id="triggerOnFormEval" class="to-submit"></form>
+      <form id="triggerOnFormHover"></form>
+
+      <select class="submit-by-id" data-selector="#triggerOnForm" data-event="submit"></select>
+      <select class="submit-by-jquery-eval"
+              data-selector="traverse: closest('.test-container').find('.to-submit')" data-event="submit"></select>
+      <select class="submit-with-on" data-on="click" data-selector="#triggerOnFormHover" data-event="submit"></select>
+    </div>
 
   </div>
 </body>
