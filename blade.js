@@ -95,7 +95,7 @@
      * Attempts to locate a jQuery set by performing a set of operations.
      * In practice, HTML elements will contain references via a data attribute that will be resolved by this function.
      * For example, a select list may indicate on change it needs to serialize all inputs within its own containing DIV tag:
-     *       <select data-serialize="traverse: closest('div').find(':input')">
+     *       <select data-data="traverse: closest('div').find(':input')">
      * This function would receive the data attribute string as query and perform the search relative to the select element (which will be scoped as keyword this).
      * @param {String} query defines the strategy to be used when locating items. The following example formats are supported:
      *           "#someId, .someClass, someTagName" - any valid jQuery selector. Simply gets wrapped in the $ sign.
@@ -103,11 +103,12 @@
      *           "func: someFunction" - a function to be called which is passed this and returns a jQuery object
      */
     jQueryEval: function(query){
-      if(!query){
+      var queryOrDefault = query || this.data('data');
+      if(!queryOrDefault){
         $.fn.blade.utils.log('BladeJs.jQueryEval: NULL/Empty query provided - returning empty set');
         return $();
       }
-      var match = /^\s*(traverse|func)\s*:\s*(.*)$/.exec(query);
+      var match = /^\s*(traverse|func)\s*:\s*(.*)$/.exec(queryOrDefault);
       if(match && match.length === 3){
         switch(match[1]){
           case 'traverse':
@@ -116,7 +117,7 @@
             return $.fn.blade.utils.resolveObject(match[2])(this);
         }
       }
-      return $(query);
+      return $(queryOrDefault);
     },
 
     /**

@@ -9,9 +9,9 @@
   <script src="lib/jquery-1.8.2.min.js"></script>
   <script src="qunit-1.10.0.js"></script>
 
+  <script src="integration/jQueryEval.js"></script>
   <script src="unit/ajaxOn.js"></script>
   <script src="unit/buildRequest.js"></script>
-  <script src="unit/jQueryEval.js"></script>
   <script src="unit/getRegisteredEvent.js"></script>
   <script src="unit/log.js"></script>
   <script src="unit/resolveObject.js"></script>
@@ -30,6 +30,23 @@
   <div id="qunit"></div>
 
   <div id="testMarkup">
+
+    <!--  // *** Test markup for jQueryEval plugin method -->
+    <div id="jQueryEval" class="test-container">
+
+      <!-- // target elements to be selected by the eval method -->
+      <input id="jQueryEvalTarget1" class="jquery-eval-target" />
+      <input id="jQueryEvalTarget2" class="jquery-eval-target" />
+
+      <button class="id-selector" data-data="#jQueryEvalTarget1"></button>
+      <button class="class-selector" data-data="#jQueryEval .jquery-eval-target"></button>
+      <button class="traverse" data-data="traverse: closest('.test-container').find('.jquery-eval-target')"></button>
+      <button class="func" data-data="func: testFunc"></button>
+      <button class="no-match" data-data="#doesNotExist .no-element"></button>
+      <button class="empty-string" data-data=""></button>
+      <button class="null-query"></button>
+    </div>
+
     <div class="wrapper">
       <input type="hidden" name="html" value="This tests normal selectors" />
       <button id="btnTest1" class="ajax-on"
@@ -43,14 +60,6 @@
       <input type="hidden" name="html" value="This tests delegate selectors" />
       <button data-url="/test/html/"
               data-data="traverse: closest('.wrapper').find(':input')">
-        Normal Selector
-      </button>
-    </div>
-
-    <div class="wrapper">
-      <button class="ajax-on"
-              data-url="/test/html/"
-              data-data='{ "html": "This is straight JSON" }'>
         Normal Selector
       </button>
     </div>
