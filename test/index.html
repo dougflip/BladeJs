@@ -20,6 +20,9 @@
   <script src="../blade.js"></script>
 
   <script type="text/javascript">
+    $(function(){
+       QUnit.start();
+    });
     QUnit.done(function(){
       // remove all test markup when finished
       $('#testMarkup').remove();
