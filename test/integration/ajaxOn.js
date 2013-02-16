@@ -1,4 +1,4 @@
-test('The ajaxOn method serializes a field', function() {
+test('The ajaxOn method serializes a single field for a GET request', function() {
 
   $.fn.blade({beforeSend:function(xhr, settings){
     ok(settings !== null, 'Settings was null!');
@@ -8,36 +8,38 @@ test('The ajaxOn method serializes a field', function() {
 
     // need to make sure and clear this so it does not interfere with other tests!
     $.fn.blade({beforeSend:null});
+    return false
   }});
 
-  $('#FirstName').blade('ajaxOn').change();
+  $('#ajaxOn .single-field-no-data').blade('ajaxOn').change();
 });
 
-test('The ajaxOn method handles custom serialize attributes', function() {
+test('The ajaxOn method forwards to jQueryEval for traversal support', function() {
 
   $.fn.blade({beforeSend:function(xhr, settings){
     ok(settings !== null, 'Settings was null!');
     var qs = settings.url.substring(settings.url.indexOf('?')+1);
-    deepEqual($('#UserForm').serialize(), qs, 'Form was not properly serialized');
+    deepEqual(qs, $('#ajaxOn .get-form').serialize(), 'Form was not properly serialized');
 
     // need to make sure and clear this so it does not interfere with other tests!
     $.fn.blade({beforeSend:null});
     return false;
   }});
 
-  $('#UserFormSubmitButton').blade('ajaxOn').click();
+  $('#ajaxOn .forward-to-jquery-eval').blade('ajaxOn').click();
 });
 
-test('The ajaxOn method serializes a form', function() {
+test('The ajaxOn method serializes a POST form', function() {
 
   $.fn.blade({beforeSend:function(xhr, settings){
     ok(settings !== null, 'Settings was null!');
     deepEqual('POST', settings.type, 'Incorrect request Type was set.');
-    deepEqual($('#UserForm').serialize(), settings.data, 'Form was not properly serialized');
+    deepEqual($('#ajaxOn .post-form').serialize(), settings.data, 'Form was not properly serialized');
 
     // need to make sure and clear this so it does not interfere with other tests!
     $.fn.blade({beforeSend:null});
+    return false;
   }});
 
-  $('#UserForm').blade('ajaxOn').submit();
+  $('#ajaxOn .post-form').blade('ajaxOn').submit();
 });

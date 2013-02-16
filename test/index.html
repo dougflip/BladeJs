@@ -9,9 +9,9 @@
   <script src="lib/jquery-1.8.2.min.js"></script>
   <script src="qunit-1.10.0.js"></script>
 
+  <script src="integration/ajaxOn.js"></script>
   <script src="integration/jQueryEval.js"></script>
   <script src="integration/serialize.js"></script>
-  <script src="unit/ajaxOn.js"></script>
   <script src="unit/buildRequest.js"></script>
   <script src="unit/getRegisteredEvent.js"></script>
   <script src="unit/log.js"></script>
@@ -30,6 +30,22 @@
   <div id="qunit"></div>
 
   <div id="testMarkup">
+
+    <!-- // *** Test markup for ajaxOn *** -->
+    <div id="ajaxOn" class="test-container">
+      <form class="get-form">
+        <input class="single-field-no-data" name="FirstName" value="Geddy" />
+        <input name="MiddleName" value="Lee" />
+      </form>
+
+      <form class="post-form" data-type="POST">
+        <input name="FirstName" value="Alex" />
+        <input name="LastName" value="Lifeson" />
+      </form>
+
+      <button class="forward-to-jquery-eval"
+             data-data="traverse: closest('.test-container').find('.get-form')"></button>
+    </div>
 
     <!--  // *** Test markup for jQueryEval plugin method *** -->
     <div id="jQueryEval" class="test-container">
