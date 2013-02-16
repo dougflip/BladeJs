@@ -2,41 +2,57 @@ BladeJs jQuery Plugin
 =====================
 
 BladeJs is a small JavaScript library which maps HTML5 data attributes to jQuery AJAX requests.
-Built as a jQuery plugin the core functionality handles registering events, serializing data,
-invoking AJAX methods, and passing the response to a JavaScript function.
+The core functionality is designed to make AJAX via jQuery even easier than it already is out of the box.
 Check out some [examples](http://www.dougflip.com/BladeJs) and [wiki](https://github.com/dougflip/BladeJs/wiki)
 for a full list of features.
 
-####Basic Usage
-We will set up two things in document ready in order to make the most of BladeJs.
+##Basic Usage
+
+####Set up within document ready
+We will set up a few configurations in document ready to get the most of BladeJs.
 First, we'll provide a few default handlers that cover our most common success and failure actions.
-Then we'll wire any element with the CSS class <code>ajax-on</code> to be handled by the ajaxOn method of Blade.
+Then we'll wire two CSS classes, `ajax-on` and `ajax-now`, to be handled by the core BladeJs methods
 
 <pre>
 $(function(){
   $.fn.blade({success: myapp.blade.success_default, error: myapp.blade.error_default});
   $('.ajax-on').blade('ajaxOn');
+  $('.ajax-now').blade('ajaxNow');
 });
 </pre>
 
+That's it! Now we just need some markup to see it in action.
+
+####The ajaxOn plugin
 Let's build a select list which will make an AJAX request on change.
 
 <pre>
-&lt;select class="ajax-on" data-url="/Address/UpdateByType" data-data=".address-type"&gt;
+&lt;select class="ajax-on" data-url="/Address/UpdateByType">
 </pre>
 
 Now every time the select triggers a `change` event
-BladeJs will serialize all elements with the "address-type" CSS class,
-send the values to "/Address/UpdateByType", and pass the response to the correct callback function.
+BladeJs will serialize this element,
+send the value to `/Address/UpdateByType`, and pass the response to `myapp.blade.success_default`.
 
-####More Info
+####The ajaxNow plugin
+Instead of a user event, say you just want to load data into an element on document ready.
+For example, you have a report on a dashboard which you want to load via AJAX because it is a long query.
+
+<pre>
+&lt;div class="ajax-now" data-url="/Reports/Dashboard" success="myapp.blade.insertReport">
+</pre>
+
+Here, we tell BladeJs to run the AJAX request immediately because we mapped the CSS class to `ajaxNow`.
+We are also using a different success function simply by specifying the fully qualified name.
+
+##More Info
 BladeJs uses defaults as much as possible, but any of these values can be overridden via data attributes.
 The idea is for the plugin to work effortlessly for common scenarios,
 but provide the flexibility to handle more advanced situations.
 Check out the [wiki](https://github.com/dougflip/BladeJs/wiki) and [examples](http://www.dougflip.com/BladeJs)
 for more in depth info.
 
-####Unit Tests
+##Tests
 Unit tests are written using [QUnit](http://qunitjs.com/).
 Viewing the unit tests in the browser is as simple as opening `test/index.html`.
 
