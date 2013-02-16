@@ -10,12 +10,12 @@
   <script src="qunit-1.10.0.js"></script>
 
   <script src="integration/jQueryEval.js"></script>
+  <script src="integration/serialize.js"></script>
   <script src="unit/ajaxOn.js"></script>
   <script src="unit/buildRequest.js"></script>
   <script src="unit/getRegisteredEvent.js"></script>
   <script src="unit/log.js"></script>
   <script src="unit/resolveObject.js"></script>
-  <script src="unit/serialize.js"></script>
   <script src="unit/triggerOn.js"></script>
   <script src="../blade.js"></script>
 
@@ -31,7 +31,7 @@
 
   <div id="testMarkup">
 
-    <!--  // *** Test markup for jQueryEval plugin method -->
+    <!--  // *** Test markup for jQueryEval plugin method *** -->
     <div id="jQueryEval" class="test-container">
 
       <!-- // target elements to be selected by the eval method -->
@@ -45,6 +45,16 @@
       <button class="no-match" data-data="#doesNotExist .no-element"></button>
       <button class="empty-string" data-data=""></button>
       <button class="null-query"></button>
+    </div>
+
+    <!-- // *** Test markup for serialize *** -->
+    <div id="serialize" class="test-container">
+
+      <input class="no-data-attribute" name="FirstName" value="Geddy" />
+      <input class="empty-data-attribute" name="MiddleName" value="Lee" />
+      <input class="data-attribute-object" data-data='{ "name": "Rush", "rank": 1 }' />
+      <input class="forward-to-jquery-eval"
+                data-data="traverse: closest('.test-container').find(':input[name=FirstName]')" />
     </div>
 
     <div class="wrapper">
