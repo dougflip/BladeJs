@@ -10,10 +10,10 @@
   <script src="qunit-1.10.0.js"></script>
 
   <script src="integration/ajaxOn.js"></script>
+  <script src="integration/getRegisteredEvent.js"></script>
   <script src="integration/jQueryEval.js"></script>
   <script src="integration/serialize.js"></script>
   <script src="unit/buildRequest.js"></script>
-  <script src="unit/getRegisteredEvent.js"></script>
   <script src="unit/log.js"></script>
   <script src="unit/resolveObject.js"></script>
   <script src="unit/triggerOn.js"></script>
@@ -47,6 +47,17 @@
              data-data="traverse: closest('.test-container').find('.get-form')"></button>
     </div>
 
+    <!-- // *** Test markup for getRegisteredEvent *** -->
+    <div id="getRegisteredEvent" class="test-container">
+
+      <button class="default-for-button"></button>
+      <div class="as-delegate" data-on="click | button"></div>
+      <form class="default-for-form" ></form>
+      <select class="default-for-select"></select>
+      <input class="default-for-text" />
+      <input class="override-default-with-on" data-on="hover" />
+    </div>
+
     <!--  // *** Test markup for jQueryEval plugin method *** -->
     <div id="jQueryEval" class="test-container">
 
@@ -73,23 +84,6 @@
                 data-data="traverse: closest('.test-container').find(':input[name=FirstName]')" />
     </div>
 
-    <div class="wrapper">
-      <input type="hidden" name="html" value="This tests normal selectors" />
-      <button id="btnTest1" class="ajax-on"
-              data-url="/test/html/"
-              data-data="traverse: closest('.wrapper').find(':input')">
-        Normal Selector
-      </button>
-    </div>
-
-    <div class="wrapper ajax-on" data-on="click | button">
-      <input type="hidden" name="html" value="This tests delegate selectors" />
-      <button data-url="/test/html/"
-              data-data="traverse: closest('.wrapper').find(':input')">
-        Normal Selector
-      </button>
-    </div>
-
     <form id="UserForm" data-url="/users/update" data-type="post">
       <input id="Id" type="hidden" name="Id" value="2112">
       <select id="Title" name="Title" data-selector="#UserForm" data-event="submit">
@@ -105,10 +99,6 @@
       <button id="UserFormSubmitButton" type="submit" data-data="traverse: closest('form').find(':input')">save</button>
     </form>
 
-    <div class="test-callbacks">
-      <input class="default-callbacks" />
-      <input class="custom-callbacks" data-success="customSuccess" data-error="customError" />
-    </div>
   </div>
 </body>
 </html>
