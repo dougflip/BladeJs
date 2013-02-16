@@ -320,11 +320,10 @@
    *   PRIVATE METHODS
    *********************************************************/
   /**
-   * Checks for a confirm handler.
-   * Then passes the provided request parameter to jQuery for execution.
-   * @param {Object} request object that will passed directly to jQuery
-   *                          any property on this object will be passed to $.ajax.
-   *                          If request.confirm is present, then the function will be executed instead
+   * Builds out a request object and either passes to a confirm handler or to jquery.ajax.
+   * @param {Object} $context A jQuery object represented the context of the ajax call
+   * @param {Object} overrides An object used to override the blade default values and handlers
+   * @param {Object} data A string or object that will be used as the request.data - @see buildRequest
    */
   var executeAjax = function($context, overrides, data){
     var request = $.fn.blade.utils.buildRequest($context, overrides, data);
