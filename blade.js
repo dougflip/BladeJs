@@ -113,7 +113,7 @@
           case 'traverse':
             return eval('this.'+match[2]);
           case 'func':
-            return $.fn.blade.utils.resolveObject(match[2])(this);
+            return $.fn.blade.utils.resolveObject(match[2], $.fn.blade.defaults.bladeSpace)(this);
         }
       }
       return $(queryOrDefault);
@@ -240,6 +240,11 @@
    *********************************************************/
   $.fn.blade.defaults = {
     /**
+     * An object representing the namespace that Blade will use first to resolve handlers - defaulted to document.
+     * This will be save a call to eval if the handler exists within this object.
+     */
+    bladeSpace: document,
+    /**
      * Default ajax error handler - called if no other method is specified
      * This should be replaced by specifying a new method via $.fn.blade({ajaxError:function(){}});
      * This implementation simply logs the server response.
@@ -282,7 +287,7 @@
       var request = $.extend({context: context}, $.fn.blade.defaults, overrides, { data: data  });
       for(var i=0; i < callbacks.length; i++){
         if(typeof request[callbacks[i]] === 'string'){
-          request[callbacks[i]] = $.fn.blade.utils.resolveObject(request[callbacks[i]]);
+          request[callbacks[i]] = $.fn.blade.utils.resolveObject(request[callbacks[i]], $.fn.blade.defaults.bladeSpace);
         }
       }
       return request;

@@ -5,6 +5,10 @@ function defaultError(){}
 function customSuccess(){}
 function customError(){}
 
+var buildRequestNs = {
+  customSuccess: function(){}
+};
+
 test('The buildRequest method should return all defaults when nothing is specified', function(){
   // set up Blade
   $.fn.blade({ success:defaultSuccess, error:defaultError });
@@ -51,6 +55,20 @@ test('The buildRequest method can resolve callback functions from strings', func
   ok(request != null, "The returned request object was null!");
   deepEqual(request.success, customSuccess, "The customSuccess handler was not properly set");
   deepEqual(request.error, customError, "The customError handler was not properly set");
+});
+
+test('The buildRequest method can resolve callback functions from strings in the bladeSpace', function(){
+  // set up Blade
+  $.fn.blade({ success:defaultSuccess, error:defaultError, bladeSpace: buildRequestNs });
+
+  var overrides = { success: 'customSuccess', error: 'customError' };
+  var request = $.fn.blade.utils.buildRequest(null, overrides, null);
+
+  ok(request != null, "The returned request object was null!");
+  deepEqual(request.success, buildRequestNs.customSuccess, "The customSuccess handler was not properly set");
+  deepEqual(request.error, customError, "The customError handler was not properly set");
+
+  $.fn.blade({bladeSpace: document});
 });
 
 test('The buildRequest method can do all of the above at once', function(){
