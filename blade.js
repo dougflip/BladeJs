@@ -47,9 +47,7 @@
     ajaxNow: function(){
       return this.each(function(i,el){
         var $this = $(el);
-        var request = $.fn.blade.utils.buildRequest($this, $this.data(), $this.blade('serialize'));
-        executeAjax(request);
-        return request.propagate;
+        return executeAjax($this, $this.data(), $this.blade('serialize'));
       });
     },
 
@@ -61,7 +59,8 @@
      */
     ajaxOn: function(){
       return this.blade('on', function(){
-        $(this).blade('ajaxNow');
+        var $this = $(this);
+        return executeAjax($this, $this.data(), $this.blade('serialize'));
       });
     },
 
@@ -321,8 +320,14 @@
    *                          any property on this object will be passed to $.ajax.
    *                          If request.confirm is present, then the function will be executed instead
    */
-  var executeAjax = function(request){
-    return request.confirm ? request.confirm(request) : $.ajax(request);
+  var executeAjax = function($context, overrides, data){
+    var request = $.fn.blade.utils.buildRequest($context, overrides, data);
+    if(request.confirm){
+      request.confirm(request);
+    } else {
+      $.ajax(request);
+    }
+    return request.propagate;
   };
 
   var callbacks = ['success', 'error', 'beforeSend', 'confirm'];
