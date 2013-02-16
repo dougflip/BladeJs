@@ -28,23 +28,40 @@
     },
 
     /**
-     * Main method of the BladeJs plugin
+     * Executes a BladeJs ajax call immediately - rather than on a registered event.
      * Maps provided HTML5 data attributes to a jQuery ajax request object and attempts to send to the server
      * All data attributes are merged with $.fn.blade.defaults to create the request object.
-     * This means that any value type property supported by jQuery AJAX can simply be supplied as a data attribute.
+     * This means that any value type property supported by jQuery.ajax can simply be supplied as a data attribute.
      * It is recommended that any situation beyond this scope should be handled with a custom `beforeSend` handler.
-     * @data {String} confirm set to a callback which will be invoked after BladeJs has created the request object, but before it is sent
+     * @data {Bool} propagate True to indicate event propagation should continue; otherwise false.
+     * @data {String} confirm Set to a callback which will be invoked after BladeJs has created the request object,
+     *                        but before it is sent
      *                Your application will provide the user with a chance to "cancel" the request.
-     *                If the action is "confirmed" you are responsible for forwarding the request to jQuery - otherwise discard the object
-     *                BladeJs provides a default implementation, $.fn.blade.defaults.confirmAction, that can be overridden.
-     *                To signify the default is to be used, simply provide an empty data-blade-confirm attribute.
+     *                If the action is "confirmed" you are responsible for forwarding the request to jQuery
+     *                  otherwise discard the object
+     *                BladeJs provides a default implementation that can be overridden.
+     * @description Typically, BladeJs is event driven and most calls will funnel through ajaxOn first.
+     *              The use case of ajaxNow is to issue an ajax request during ready/load of HTML.
+     *              The practice now is to mark these elements with a separate CSS class and invoke ajaxNow on ready.
      */
-    ajaxOn: function(){
-      return this.blade('on', function(){
-        var $this = $(this);
+    ajaxNow: function(){
+      return this.each(function(i,el){
+        var $this = $(el);
         var request = $.fn.blade.utils.buildRequest($this, $this.data(), $this.blade('serialize'));
         executeAjax(request);
         return request.propagate;
+      });
+    },
+
+    /**
+     * Wraps ajaxNow to be invoked on the specified 'on' event.
+     * @data {String} on The name of the event which will invoke the ajax call.
+     *                    This can be a jQuery event or custom defined event.
+     * @see ajaxOn
+     */
+    ajaxOn: function(){
+      return this.blade('on', function(){
+        $(this).blade('ajaxNow');
       });
     },
 
