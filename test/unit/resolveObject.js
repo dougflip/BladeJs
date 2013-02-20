@@ -1,31 +1,32 @@
-document.testResolve = function(){};
-
-var ns = {
-  testResolve: function(){}
+resolveObject = {
+  testResolve: function(){},
+  nestedNs: {
+    testResolve: function(){}
+  }
 };
 
-test("resolveObject defaults to searching the document for an object", function(){
-  var funcRef = $.fn.blade.utils.resolveObject('testResolve');
+test("resolveObject will resolve against a context object", function(){
+  var funcRef = $.fn.blade.utils.resolveObject('testResolve', resolveObject);
   ok(funcRef != null, 'Function at the document level was not resolved');
-  deepEqual(document.testResolve, funcRef);
+  deepEqual(resolveObject.testResolve, funcRef);
 });
 
-test("resolveObject can explicitly search the document for an object", function(){
-  var funcRef = $.fn.blade.utils.resolveObject('testResolve', document);
+test("resolveObject will resolve against a fully qualified string", function(){
+  var funcRef = $.fn.blade.utils.resolveObject('resolveObject.testResolve');
   ok(funcRef != null, 'Function at the document level was not resolved');
-  deepEqual(document.testResolve, funcRef);
+  deepEqual(resolveObject.testResolve, funcRef);
 });
 
-test("resolveObject can find a namespaced object given a context", function(){
-  var funcRef = $.fn.blade.utils.resolveObject('testResolve', ns);
+test("resolveObject can find a nested namespaced object given a context", function(){
+  var funcRef = $.fn.blade.utils.resolveObject('testResolve', resolveObject.nestedNs);
   ok(funcRef != null, 'Function at the document level was not resolved');
-  deepEqual(ns.testResolve, funcRef);
-  ok(funcRef !== document.testResolve);
+  deepEqual(resolveObject.nestedNs.testResolve, funcRef);
+  ok(funcRef !== resolveObject.testResolve);
 });
 
-test("resolveObject can find a namespaced object by a fully qualified string name", function(){
-  var funcRef = $.fn.blade.utils.resolveObject('ns.testResolve');
+test("resolveObject can find a nested namespaced object by a fully qualified string name", function(){
+  var funcRef = $.fn.blade.utils.resolveObject('resolveObject.nestedNs.testResolve');
   ok(funcRef != null, 'Function at the document level was not resolved');
-  deepEqual(ns.testResolve, funcRef);
-  ok(funcRef !== document.testResolve);
+  deepEqual(resolveObject.nestedNs.testResolve, funcRef);
+  ok(funcRef !== resolveObject.testResolve);
 });
